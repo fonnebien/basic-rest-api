@@ -13,7 +13,7 @@ import {
 } from '../types/error.ts';
 import { Logger } from '../util/logger.util.ts';
 
-const logger = Logger.getInstance('api:error-handler');
+const logger = Logger.getInstance('api:middleware:error-handler');
 
 /**
  * Error handler middleware for Hono
@@ -37,7 +37,12 @@ export const errorHandler = (): MiddlewareHandler => {
         message: 'An unexpected error occurred',
         status: 500,
         isOperational: false,
-        trace: process.env.NODE_ENV === 'production' ? undefined : (err as unknown) instanceof Error ? (err as Error).stack : String(err),
+        trace:
+          process.env.NODE_ENV === 'production'
+            ? undefined
+            : (err as unknown) instanceof Error
+              ? (err as Error).stack
+              : String(err),
       };
 
       return c.json(formatAPIError(serverError), 500);

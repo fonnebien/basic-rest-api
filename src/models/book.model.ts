@@ -1,25 +1,19 @@
 import { z } from 'zod';
 
-import 'zod-openapi/extend';
-
-const bookSchema = z
-  .object({
-    title: z.string().min(1, { message: 'Title is required' }),
-    authorId: z.string().uuid({ message: 'Invalid UUID format' }),
-    publicationYear: z
-      .number()
-      .int()
-      .min(1500, { message: 'Publication year must be after 1500' })
-      .max(new Date().getFullYear(), { message: 'Publication year cannot be in the future' }),
-    genre: z.string().optional(),
-    summary: z.string().optional(),
-  })
-  .openapi({
-    ref: 'Book',
-  });
+const bookSchema = z.object({
+  title: z.string().min(1, { error: 'Title is required' }),
+  authorId: z.uuid({ error: 'Invalid UUID format' }),
+  publicationYear: z
+    .number()
+    .int()
+    .min(1500, { error: 'Publication year must be after 1500' })
+    .max(new Date().getFullYear(), { error: 'Publication year cannot be in the future' }),
+  genre: z.string().optional(),
+  summary: z.string().optional(),
+});
 
 const bookWithIdSchema = bookSchema.extend({
-  id: z.string().uuid({ message: 'Invalid UUID format' }),
+  id: z.uuid({ error: 'Invalid UUID format' }),
 });
 
 type Book = z.infer<typeof bookWithIdSchema>;

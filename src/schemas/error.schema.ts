@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import 'zod-openapi/extend';
-
 const errorResponseSchema = z.object({
   error: z.string(),
 });

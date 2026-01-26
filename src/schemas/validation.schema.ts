@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
-import 'zod-openapi/extend';
-
-const idValidationSchema = z.string().uuid({ message: 'Invalid UUID format' });
+const idValidationSchema = z.object({
+  id: z.uuid({
+    error: 'Invalid UUID format for ID',
+  }),
+});
 type IdValidationSchema = z.infer<typeof idValidationSchema>;
 
 export { idValidationSchema, type IdValidationSchema };

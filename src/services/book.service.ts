@@ -5,7 +5,7 @@ import { Logger } from '../util/logger.util.ts';
 const books: Book[] = json as Book[];
 
 export class BookService {
-  constructor(private logger: Logger = Logger.getInstance('api:bookService')) {}
+  constructor(private logger: Logger = Logger.getInstance('api:service:book')) {}
 
   async getAllBooks(): Promise<Book[]> {
     this.logger.info('Fetching all books');
