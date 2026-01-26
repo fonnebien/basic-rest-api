@@ -12,7 +12,13 @@
     "lineWidth": 120,
     "attributePosition": "auto",
     "bracketSpacing": true,
-    "includes": ["**", "!**/node_modules", "!**/public", "!**/build", "!**/dist"]
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/public",
+      "!**/build",
+      "!**/dist"
+    ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
