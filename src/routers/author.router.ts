@@ -1,7 +1,8 @@
 import { Hono } from 'hono';
+import type { RequestIdVariables } from 'hono/request-id';
 import { AuthorService } from '../services/author.service.ts';
 
-const authorRouter = new Hono();
+const authorRouter = new Hono<{ Variables: RequestIdVariables }>();
 const authorService = new AuthorService();
 
 authorRouter.get('/', async (c) => {

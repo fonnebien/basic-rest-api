@@ -1,16 +1,21 @@
+import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
+import type { RequestIdVariables } from 'hono/request-id';
+import { bookSchema } from '../models/book.model.ts';
+import { idValidationSchema } from '../schemas/validation.schema.ts';
 import { BookService } from '../services/book.service.ts';
 
-const bookRouter = new Hono();
+const bookRouter = new Hono<{ Variables: RequestIdVariables }>();
 const bookService = new BookService();
 
 bookRouter.get('/', async (c) => {
   const books = await bookService.getAllBooks();
+
   return c.json(books);
 });
 
-bookRouter.get('/:id', async (c) => {
-  const id = c.req.param('id');
+bookRouter.get('/:id', zValidator('param', idValidationSchema), async (c) => {
+  const { id } = c.req.valid('param');
 
   if (!id) {
     return c.json({ error: 'ID parameter is required' }, 400);
@@ -37,9 +42,9 @@ bookRouter.post('/', async (c) => {
   return c.json(newBook);
 });
 
-bookRouter.put('/:id', async (c) => {
-  const id = c.req.param('id');
-  const updatedBook = await c.req.json();
+bookRouter.put('/:id', zValidator('param', idValidationSchema), zValidator('json', bookSchema), async (c) => {
+  const { id } = c.req.valid('param');
+  const updatedBook = await c.req.valid('json');
 
   if (!id) {
     return c.json({ error: 'ID parameter is required' }, 400);
@@ -58,8 +63,9 @@ bookRouter.put('/:id', async (c) => {
   return c.json(book);
 });
 
-bookRouter.delete('/:id', async (c) => {
-  const id = c.req.param('id');
+bookRouter.delete('/:id', zValidator('param', idValidationSchema), async (c) => {
+  const { id } = c.req.valid('param');
+
   if (!id) {
     return c.json({ error: 'ID parameter is required' }, 400);
   }

@@ -5,7 +5,7 @@ import { Logger } from '../util/logger.util.ts';
 const authors: Author[] = json as Author[];
 
 export class AuthorService {
-  constructor(private logger: Logger = Logger.getInstance('api:authorService')) {}
+  constructor(private logger: Logger = Logger.getInstance('api:service:author')) {}
 
   async getAllAuthors(): Promise<Author[]> {
     this.logger.info('Fetching all authors');
