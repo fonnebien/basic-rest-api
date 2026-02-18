@@ -1,5 +1,5 @@
-import { type Context, type MiddlewareHandler } from 'hono';
-import type { ContentfulStatusCode } from 'hono/utils/http-status';
+import { type Context, type MiddlewareHandler } from "hono";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import {
   type APIError,
   type AuthenticationError,
@@ -10,10 +10,10 @@ import {
   type ResourceNotFoundError,
   type ServerError,
   type ValidationError,
-} from '../types/error.ts';
-import { Logger } from '../util/logger.util.ts';
+} from "../types/error.ts";
+import { Logger } from "../util/logger.util.ts";
 
-const logger = Logger.getInstance('api:middleware:error-handler');
+const logger = Logger.getInstance("api:middleware:error-handler");
 
 /**
  * Error handler middleware for Hono
@@ -24,7 +24,7 @@ export const errorHandler = (): MiddlewareHandler => {
     try {
       await next();
     } catch (err) {
-      logger.error('Error caught by error handler:', err as Error);
+      logger.error("Error caught by error handler:", err as Error);
 
       // Handle known error types
       if (isAPIError(err)) {
@@ -33,12 +33,12 @@ export const errorHandler = (): MiddlewareHandler => {
 
       // Handle unknown errors
       const serverError: ServerError = {
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'An unexpected error occurred',
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred",
         status: 500,
         isOperational: false,
         trace:
-          process.env.NODE_ENV === 'production'
+          process.env.NODE_ENV === "production"
             ? undefined
             : (err as unknown) instanceof Error
               ? (err as Error).stack
@@ -54,7 +54,7 @@ export const errorHandler = (): MiddlewareHandler => {
  * Type guard to check if an error is an APIError
  */
 function isAPIError(err: unknown): err is APIError {
-  return typeof err === 'object' && err !== null && 'code' in err && 'message' in err && 'status' in err;
+  return typeof err === "object" && err !== null && "code" in err && "message" in err && "status" in err;
 }
 
 /**
@@ -111,7 +111,7 @@ function formatAPIError(error: APIError): Record<string, unknown> {
 
   if (isServerError(error)) {
     const response = { ...baseError };
-    if (process.env.NODE_ENV !== 'production' && error.trace) {
+    if (process.env.NODE_ENV !== "production" && error.trace) {
       (response.error as ServerError).trace = error.trace;
     }
     return response;
@@ -137,33 +137,33 @@ function formatAPIError(error: APIError): Record<string, unknown> {
 
 // Type guards for specific error types
 function isValidationError(error: APIError): error is ValidationError {
-  return 'invalidFields' in error;
+  return "invalidFields" in error;
 }
 
 function isAuthenticationError(error: APIError): error is AuthenticationError {
-  return 'authFailure' in error;
+  return "authFailure" in error;
 }
 
 function isAuthorizationError(error: APIError): error is AuthorizationError {
-  return 'requiredPermission' in error || 'requiredRole' in error;
+  return "requiredPermission" in error || "requiredRole" in error;
 }
 
 function isResourceNotFoundError(error: APIError): error is ResourceNotFoundError {
-  return 'resource' in error;
+  return "resource" in error;
 }
 
 function isRateLimitError(error: APIError): error is RateLimitError {
-  return 'retryAfter' in error;
+  return "retryAfter" in error;
 }
 
 function isServerError(error: APIError): error is ServerError {
-  return 'isOperational' in error;
+  return "isOperational" in error;
 }
 
 function isConflictError(error: APIError): error is ConflictError {
-  return 'conflictingResource' in error || 'conflictReason' in error;
+  return "conflictingResource" in error || "conflictReason" in error;
 }
 
 function isBadRequestError(error: APIError): error is BadRequestError {
-  return 'invalidParameters' in error;
+  return "invalidParameters" in error;
 }

@@ -1,20 +1,8 @@
 {
+  "extends": "@total-typescript/tsconfig/tsc/no-dom/app",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "types": ["node"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "allowImportingTsExtensions": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "resolveJsonModule": true
+    "verbatimModuleSyntax": false,
+    "outDir": "./dist"
   },
-  "exclude": ["node_modules"]
+  "exclude": ["**/**.json"]
 }

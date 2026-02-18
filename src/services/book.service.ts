@@ -1,14 +1,14 @@
-import json from '../data/books.json' with { type: 'json' };
-import type { Book } from '../models/book.model.ts';
-import { Logger } from '../util/logger.util.ts';
+import json from "../data/books.json" with { type: "json" };
+import type { Book } from "../models/book.model.ts";
+import { Logger } from "../util/logger.util.ts";
 
 const books: Book[] = json as Book[];
 
 export class BookService {
-  constructor(private logger: Logger = Logger.getInstance('api:service:book')) {}
+  constructor(private logger: Logger = Logger.getInstance("api:service:book")) {}
 
   async getAllBooks(): Promise<Book[]> {
-    this.logger.info('Fetching all books');
+    this.logger.info("Fetching all books");
     return books;
   }
 
@@ -21,7 +21,7 @@ export class BookService {
   }
 
   async createBook(book: Book): Promise<Book> {
-    this.logger.info('Creating a new book');
+    this.logger.info("Creating a new book");
 
     books.push(book);
 

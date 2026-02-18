@@ -2,7 +2,7 @@
  * Common API error types for consistent error handling across the application.
  */
 
-import type { ContentfulStatusCode } from 'hono/utils/http-status';
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 export interface APIError {
   code: string;
@@ -20,7 +20,7 @@ export interface ValidationError extends APIError {
 }
 
 export interface AuthenticationError extends APIError {
-  authFailure: 'invalid_credentials' | 'expired_token' | 'invalid_token' | 'missing_token';
+  authFailure: "invalid_credentials" | "expired_token" | "invalid_token" | "missing_token";
 }
 
 export interface AuthorizationError extends APIError {

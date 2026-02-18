@@ -1,14 +1,14 @@
-import json from '../data/authors.json' with { type: 'json' };
-import type { Author } from '../models/author.model.ts';
-import { Logger } from '../util/logger.util.ts';
+import json from "../data/authors.json" with { type: "json" };
+import type { Author } from "../models/author.model.ts";
+import { Logger } from "../util/logger.util.ts";
 
 const authors: Author[] = json as Author[];
 
 export class AuthorService {
-  constructor(private logger: Logger = Logger.getInstance('api:service:author')) {}
+  constructor(private logger: Logger = Logger.getInstance("api:service:author")) {}
 
   async getAllAuthors(): Promise<Author[]> {
-    this.logger.info('Fetching all authors');
+    this.logger.info("Fetching all authors");
     return authors;
   }
 
@@ -21,7 +21,7 @@ export class AuthorService {
   }
 
   async createAuthor(author: Author): Promise<Author> {
-    this.logger.info('Creating a new author');
+    this.logger.info("Creating a new author");
 
     authors.push(author);
 

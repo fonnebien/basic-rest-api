@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const authorSchema = z.object({
-  name: z.string().min(1, { error: 'Name is required' }),
+  name: z.string().min(1, { error: "Name is required" }),
   bio: z.string().optional(),
   birthDate: z
     .string()
@@ -16,7 +16,7 @@ const authorSchema = z.object({
 });
 
 const authorWithIdSchema = authorSchema.extend({
-  id: z.uuid({ error: 'Invalid UUID format' }),
+  id: z.uuid({ error: "Invalid UUID format" }),
 });
 
 type Author = z.infer<typeof authorWithIdSchema>;
