@@ -1,8 +1,8 @@
-import json from "../data/authors.json" with { type: "json" };
-import type { Author } from "../models/author.model.ts";
-import { Logger } from "../util/logger.util.ts";
+import { authors as authorsData } from "@core/index.js";
+import { type Author } from "@models/author.model.js";
+import { Logger } from "@utils/logger.util.js";
 
-const authors: Author[] = json as Author[];
+const authors: Author[] = authorsData as Author[];
 
 export class AuthorService {
   constructor(private logger: Logger = Logger.getInstance("api:service:author")) {}
@@ -37,7 +37,11 @@ export class AuthorService {
       return null;
     }
 
-    authors[index] = { ...authors[index], ...updatedAuthor };
+    if (!authors[index]) {
+      return null;
+    }
+
+    authors[index] = { ...authors[index], name: updatedAuthor.name ?? authors[index].name };
     return authors[index];
   }
 

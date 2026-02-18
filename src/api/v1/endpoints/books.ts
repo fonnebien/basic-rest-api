@@ -1,20 +1,20 @@
 import { zValidator } from "@hono/zod-validator";
+import { bookSchema } from "@models/book.model.js";
+import { BookService } from "@services/book.service.js";
+import { idValidationSchema } from "@validations/id.schema.js";
 import { Hono } from "hono";
 import type { RequestIdVariables } from "hono/request-id";
-import { bookSchema } from "../models/book.model.ts";
-import { idValidationSchema } from "../schemas/validation.schema.ts";
-import { BookService } from "../services/book.service.ts";
 
-const bookRouter = new Hono<{ Variables: RequestIdVariables }>();
+const router = new Hono<{ Variables: RequestIdVariables }>();
 const bookService = new BookService();
 
-bookRouter.get("/", async (c) => {
+router.get("/", async (c) => {
   const books = await bookService.getAllBooks();
 
   return c.json(books);
 });
 
-bookRouter.get("/:id", zValidator("param", idValidationSchema), async (c) => {
+router.get("/:id", zValidator("param", idValidationSchema), async (c) => {
   const { id } = c.req.valid("param");
 
   if (!id) {
@@ -30,7 +30,7 @@ bookRouter.get("/:id", zValidator("param", idValidationSchema), async (c) => {
   return c.json(book);
 });
 
-bookRouter.post("/", async (c) => {
+router.post("/", async (c) => {
   const book = await c.req.json();
 
   if (!book) {
@@ -42,7 +42,7 @@ bookRouter.post("/", async (c) => {
   return c.json(newBook);
 });
 
-bookRouter.put("/:id", zValidator("param", idValidationSchema), zValidator("json", bookSchema), async (c) => {
+router.put("/:id", zValidator("param", idValidationSchema), zValidator("json", bookSchema), async (c) => {
   const { id } = c.req.valid("param");
   const updatedBook = await c.req.valid("json");
 
@@ -63,7 +63,7 @@ bookRouter.put("/:id", zValidator("param", idValidationSchema), zValidator("json
   return c.json(book);
 });
 
-bookRouter.delete("/:id", zValidator("param", idValidationSchema), async (c) => {
+router.delete("/:id", zValidator("param", idValidationSchema), async (c) => {
   const { id } = c.req.valid("param");
 
   if (!id) {
@@ -75,7 +75,7 @@ bookRouter.delete("/:id", zValidator("param", idValidationSchema), async (c) => 
   return c.json({ success: bookDeleted });
 });
 
-bookRouter.get("/search", async (c) => {
+router.get("/search", async (c) => {
   const query = c.req.query("query");
 
   if (!query) {
@@ -87,4 +87,4 @@ bookRouter.get("/search", async (c) => {
   return c.json(searchResults);
 });
 
-export default bookRouter;
+export default router;

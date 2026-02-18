@@ -2,7 +2,19 @@
   "extends": "@total-typescript/tsconfig/tsc/no-dom/app",
   "compilerOptions": {
     "verbatimModuleSyntax": false,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+      "@api/*": ["./src/api/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@models/*": ["./src/domain/models/*"],
+      "@services/*": ["./src/domain/services/*"],
+      "@errors/*": ["./src/domain/errors/*"],
+      "@middleware/*": ["./src/middleware/*"],
+      "@validations/*": ["./src/validations/*"],
+      "@core/*": ["./src/core/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@utils/*": ["./src/utils/*"]
+    }
   },
   "exclude": ["**/**.json"]
 }

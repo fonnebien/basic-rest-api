@@ -1,8 +1,8 @@
-import json from "../data/books.json" with { type: "json" };
-import type { Book } from "../models/book.model.ts";
-import { Logger } from "../util/logger.util.ts";
+import { books as booksData } from "@core/index.js";
+import { type Book } from "@models/book.model.js";
+import { Logger } from "@utils/logger.util.js";
 
-const books: Book[] = json as Book[];
+const books: Book[] = booksData as Book[];
 
 export class BookService {
   constructor(private logger: Logger = Logger.getInstance("api:service:book")) {}
@@ -37,7 +37,15 @@ export class BookService {
       return null;
     }
 
-    books[index] = { ...books[index], ...updatedBook };
+    if (!books[index]) {
+      return null;
+    }
+
+    books[index] = {
+      ...books[index],
+      title: updatedBook.title ?? books[index].title,
+      authorId: updatedBook.authorId ?? books[index].authorId,
+    };
     return books[index];
   }
 

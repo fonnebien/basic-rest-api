@@ -1,24 +1,20 @@
+import type {
+  APIError,
+  AuthenticationError,
+  AuthorizationError,
+  BadRequestError,
+  ConflictError,
+  RateLimitError,
+  ResourceNotFoundError,
+  ServerError,
+  ValidationError,
+} from "@domain/errors/api-error.js";
+import { Logger } from "@utils/logger.util.js";
 import { type Context, type MiddlewareHandler } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import {
-  type APIError,
-  type AuthenticationError,
-  type AuthorizationError,
-  type BadRequestError,
-  type ConflictError,
-  type RateLimitError,
-  type ResourceNotFoundError,
-  type ServerError,
-  type ValidationError,
-} from "../types/error.ts";
-import { Logger } from "../util/logger.util.ts";
 
 const logger = Logger.getInstance("api:middleware:error-handler");
 
-/**
- * Error handler middleware for Hono
- * Catches errors thrown in the request pipeline and formats appropriate responses
- */
 export const errorHandler = (): MiddlewareHandler => {
   return async (c: Context, next: () => Promise<void>) => {
     try {
@@ -26,7 +22,6 @@ export const errorHandler = (): MiddlewareHandler => {
     } catch (err) {
       logger.error("Error caught by error handler:", err as Error);
 
-      // Handle known error types
       if (isAPIError(err)) {
         return c.json(formatAPIError(err), err.status as ContentfulStatusCode);
       }
@@ -50,16 +45,10 @@ export const errorHandler = (): MiddlewareHandler => {
   };
 };
 
-/**
- * Type guard to check if an error is an APIError
- */
 function isAPIError(err: unknown): err is APIError {
   return typeof err === "object" && err !== null && "code" in err && "message" in err && "status" in err;
 }
 
-/**
- * Format the API error for the response
- */
 function formatAPIError(error: APIError): Record<string, unknown> {
   const baseError = {
     error: {
@@ -135,7 +124,6 @@ function formatAPIError(error: APIError): Record<string, unknown> {
   return baseError;
 }
 
-// Type guards for specific error types
 function isValidationError(error: APIError): error is ValidationError {
   return "invalidFields" in error;
 }

@@ -1,7 +1,3 @@
-/**
- * Common API error types for consistent error handling across the application.
- */
-
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 export interface APIError {
