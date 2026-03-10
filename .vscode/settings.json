@@ -1,4 +1,5 @@
 {
   "conventionalCommits.scopes": ["project-setup", "CRUD", "openapi"],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "biomejs.biome"
 }

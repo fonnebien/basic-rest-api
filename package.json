@@ -18,6 +18,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@biomejs/biome": "2.4.6",
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^10.0.1",
     "@total-typescript/tsconfig": "^1.0.4",
