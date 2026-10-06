@@ -1,9 +1,14 @@
 {
-  "extends": "@total-typescript/tsconfig/tsc/no-dom/app",
   "compilerOptions": {
-    "verbatimModuleSyntax": false,
-    "outDir": "./dist",
-    "rootDir": ".",
+    /* Language & environment */
+    "target": "es2023",
+    "lib": ["es2023"],
+    "types": ["node"],
+
+    /* Modules */
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
     "paths": {
       "@api/*": ["./src/api/*"],
       "@domain/*": ["./src/domain/*"],
@@ -15,7 +20,28 @@
       "@core/*": ["./src/core/*"],
       "@routes/*": ["./src/routes/*"],
       "@utils/*": ["./src/utils/*"]
-    }
+    },
+
+    /* Emit */
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": true,
+
+    /* Type checking */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+
+    /* Interop & safety */
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   },
-  "exclude": ["**/**.json"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
