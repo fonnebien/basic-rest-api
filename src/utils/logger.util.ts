@@ -33,23 +33,33 @@ export class Logger {
 
   public debug(message: string, ...args: Record<string, unknown>[]): void {
     this.logger.debug(
-      args.length ? { service: this.serviceName, message, ...args[0] } : { service: this.serviceName, message },
+      args.length
+        ? { service: this.serviceName, message, ...args[0] }
+        : { service: this.serviceName, message },
     );
   }
 
   public info(message: string, ...args: Record<string, unknown>[]): void {
     this.logger.info(
-      args.length ? { service: this.serviceName, message, ...args[0] } : { service: this.serviceName, message },
+      args.length
+        ? { service: this.serviceName, message, ...args[0] }
+        : { service: this.serviceName, message },
     );
   }
 
   public warn(message: string, ...args: Record<string, unknown>[]): void {
     this.logger.warn(
-      args.length ? { service: this.serviceName, message, ...args[0] } : { service: this.serviceName, message },
+      args.length
+        ? { service: this.serviceName, message, ...args[0] }
+        : { service: this.serviceName, message },
     );
   }
 
-  public error(message: string, error?: Error, ...args: Record<string, unknown>[]): void {
+  public error(
+    message: string,
+    error?: Error,
+    ...args: Record<string, unknown>[]
+  ): void {
     if (error) {
       this.logger.error({
         service: this.serviceName,
@@ -59,7 +69,9 @@ export class Logger {
       });
     } else {
       this.logger.error(
-        args.length ? { service: this.serviceName, message, ...args[0] } : { service: this.serviceName, message },
+        args.length
+          ? { service: this.serviceName, message, ...args[0] }
+          : { service: this.serviceName, message },
       );
     }
   }

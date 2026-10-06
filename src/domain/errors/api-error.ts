@@ -16,7 +16,8 @@ export interface ValidationError extends APIError {
 }
 
 export interface AuthenticationError extends APIError {
-  authFailure: "invalid_credentials" | "expired_token" | "invalid_token" | "missing_token";
+  authFailure:
+    "invalid_credentials" | "expired_token" | "invalid_token" | "missing_token";
 }
 
 export interface AuthorizationError extends APIError {

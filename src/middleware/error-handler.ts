@@ -19,6 +19,7 @@ export const errorHandler = (): MiddlewareHandler => {
   return async (c: Context, next: () => Promise<void>) => {
     try {
       await next();
+      return;
     } catch (err) {
       logger.error("Error caught by error handler:", err as Error);
 
@@ -46,7 +47,13 @@ export const errorHandler = (): MiddlewareHandler => {
 };
 
 function isAPIError(err: unknown): err is APIError {
-  return typeof err === "object" && err !== null && "code" in err && "message" in err && "status" in err;
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "code" in err &&
+    "message" in err &&
+    "status" in err
+  );
 }
 
 function formatAPIError(error: APIError): Record<string, unknown> {
@@ -136,7 +143,9 @@ function isAuthorizationError(error: APIError): error is AuthorizationError {
   return "requiredPermission" in error || "requiredRole" in error;
 }
 
-function isResourceNotFoundError(error: APIError): error is ResourceNotFoundError {
+function isResourceNotFoundError(
+  error: APIError,
+): error is ResourceNotFoundError {
   return "resource" in error;
 }
 

@@ -24,4 +24,11 @@ type AuthorCreation = z.infer<typeof authorSchema>;
 type AuthorUpdate = Partial<AuthorCreation>;
 type AuthorResponse = z.infer<typeof authorWithIdSchema>;
 
-export { authorSchema, authorWithIdSchema, type Author, type AuthorCreation, type AuthorResponse, type AuthorUpdate };
+export {
+  authorSchema,
+  authorWithIdSchema,
+  type Author,
+  type AuthorCreation,
+  type AuthorResponse,
+  type AuthorUpdate,
+};

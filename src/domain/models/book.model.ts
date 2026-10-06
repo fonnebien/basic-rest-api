@@ -7,7 +7,9 @@ const bookSchema = z.object({
     .number()
     .int()
     .min(1500, { error: "Publication year must be after 1500" })
-    .max(new Date().getFullYear(), { error: "Publication year cannot be in the future" }),
+    .max(new Date().getFullYear(), {
+      error: "Publication year cannot be in the future",
+    }),
   genre: z.string().optional(),
   summary: z.string().optional(),
 });
@@ -21,4 +23,11 @@ type BookCreation = z.infer<typeof bookSchema>;
 type BookUpdate = Partial<BookCreation>;
 type BookResponse = z.infer<typeof bookWithIdSchema>;
 
-export { bookSchema, bookWithIdSchema, type Book, type BookCreation, type BookResponse, type BookUpdate };
+export {
+  bookSchema,
+  bookWithIdSchema,
+  type Book,
+  type BookCreation,
+  type BookResponse,
+  type BookUpdate,
+};

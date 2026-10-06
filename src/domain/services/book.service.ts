@@ -5,7 +5,9 @@ import { Logger } from "@utils/logger.util.js";
 const books: Book[] = booksData as Book[];
 
 export class BookService {
-  constructor(private logger: Logger = Logger.getInstance("api:service:book")) {}
+  constructor(
+    private logger: Logger = Logger.getInstance("api:service:book"),
+  ) {}
 
   async getAllBooks(): Promise<Book[]> {
     this.logger.info("Fetching all books");
@@ -28,7 +30,10 @@ export class BookService {
     return book;
   }
 
-  async updateBook(id: string, updatedBook: Partial<Book>): Promise<Book | null> {
+  async updateBook(
+    id: string,
+    updatedBook: Partial<Book>,
+  ): Promise<Book | null> {
     this.logger.info(`Updating book with ID: ${id}`);
 
     const index = books.findIndex((book) => book.id === id);
@@ -65,6 +70,8 @@ export class BookService {
   async searchBooks(query: string): Promise<Book[]> {
     this.logger.info(`Searching books with query: ${query}`);
 
-    return books.filter((book) => book.title.toLowerCase().includes(query.toLowerCase()));
+    return books.filter((book) =>
+      book.title.toLowerCase().includes(query.toLowerCase()),
+    );
   }
 }

@@ -42,26 +42,31 @@ router.post("/", async (c) => {
   return c.json(newBook);
 });
 
-router.put("/:id", zValidator("param", idValidationSchema), zValidator("json", bookSchema), async (c) => {
-  const { id } = c.req.valid("param");
-  const updatedBook = await c.req.valid("json");
+router.put(
+  "/:id",
+  zValidator("param", idValidationSchema),
+  zValidator("json", bookSchema),
+  async (c) => {
+    const { id } = c.req.valid("param");
+    const updatedBook = await c.req.valid("json");
 
-  if (!id) {
-    return c.json({ error: "ID parameter is required" }, 400);
-  }
+    if (!id) {
+      return c.json({ error: "ID parameter is required" }, 400);
+    }
 
-  if (!updatedBook) {
-    return c.json({ error: "Updated book data is required" }, 400);
-  }
+    if (!updatedBook) {
+      return c.json({ error: "Updated book data is required" }, 400);
+    }
 
-  const book = await bookService.updateBook(id, updatedBook);
+    const book = await bookService.updateBook(id, updatedBook);
 
-  if (!book) {
-    return c.json({ error: "Book not found" }, 404);
-  }
+    if (!book) {
+      return c.json({ error: "Book not found" }, 404);
+    }
 
-  return c.json(book);
-});
+    return c.json(book);
+  },
+);
 
 router.delete("/:id", zValidator("param", idValidationSchema), async (c) => {
   const { id } = c.req.valid("param");

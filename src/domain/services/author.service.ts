@@ -5,7 +5,9 @@ import { Logger } from "@utils/logger.util.js";
 const authors: Author[] = authorsData as Author[];
 
 export class AuthorService {
-  constructor(private logger: Logger = Logger.getInstance("api:service:author")) {}
+  constructor(
+    private logger: Logger = Logger.getInstance("api:service:author"),
+  ) {}
 
   async getAllAuthors(): Promise<Author[]> {
     this.logger.info("Fetching all authors");
@@ -28,7 +30,10 @@ export class AuthorService {
     return author;
   }
 
-  async updateAuthor(id: string, updatedAuthor: Partial<Author>): Promise<Author | null> {
+  async updateAuthor(
+    id: string,
+    updatedAuthor: Partial<Author>,
+  ): Promise<Author | null> {
     this.logger.info(`Updating author with ID: ${id}`);
 
     const index = authors.findIndex((author) => author.id === id);
@@ -41,7 +46,10 @@ export class AuthorService {
       return null;
     }
 
-    authors[index] = { ...authors[index], name: updatedAuthor.name ?? authors[index].name };
+    authors[index] = {
+      ...authors[index],
+      name: updatedAuthor.name ?? authors[index].name,
+    };
     return authors[index];
   }
 
@@ -61,6 +69,8 @@ export class AuthorService {
   async searchAuthors(query: string): Promise<Author[]> {
     this.logger.info(`Searching authors with query: ${query}`);
 
-    return authors.filter((author) => author.name.toLowerCase().includes(query.toLowerCase()));
+    return authors.filter((author) =>
+      author.name.toLowerCase().includes(query.toLowerCase()),
+    );
   }
 }
