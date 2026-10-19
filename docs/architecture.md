@@ -36,7 +36,7 @@ Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`
 
 ## Validation
 
-Request validation lives in the API layer: Zod schemas in `api/v1/schemas/` are applied with `zValidator` in the endpoints. The domain only knows plain TypeScript types, so it does not depend on Zod.
+Request validation lives in the API layer: Zod schemas in `api/v1/schemas/` are applied in the endpoints through the `validate()` middleware (`middleware/validate.middleware.ts`), a `zValidator` wrapper that throws a typed `ValidationError` so failures are formatted by the global error handler. The domain only knows plain TypeScript types, so it does not depend on Zod.
 
 ## Principles
 
