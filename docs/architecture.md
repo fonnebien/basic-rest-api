@@ -34,6 +34,10 @@ src
 
 Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`, `in-memory-book.repository.ts`, `id.schema.ts`. Roles in use: `model`, `service`, `repository`, `port`, `endpoint`, `schema`, `router`, `middleware`, `types`, `classes`, `logger`. The composition files at the `src/` root (`app.ts`, `container.ts`, `server.ts`) are the exception.
 
+## Path aliases
+
+Imports use aliases with a `.js` extension (for example `@services/book.service.js`): `@api/`, `@domain/`, `@models/`, `@services/`, `@errors/`, `@repositories/`, `@infrastructure/` and `@middleware/`. They are declared in `tsconfig.json` (`paths`) and mirrored in `vitest.config.ts` (`resolve.alias`), so a new alias must be added in both. `tsx` and `tsc` resolve them from `tsconfig.json`.
+
 ## Validation
 
 Request validation lives in the API layer: Zod schemas in `api/v1/schemas/` are applied in the endpoints through the `validate()` middleware (`middleware/validate.middleware.ts`), a `zValidator` wrapper that throws a typed `ValidationError` so failures are formatted by the global error handler. The domain only knows plain TypeScript types, so it does not depend on Zod.
