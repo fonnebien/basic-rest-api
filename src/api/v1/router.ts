@@ -1,10 +1,22 @@
+import type { AuthorService } from "@services/author.service.js";
+import type { BookService } from "@services/book.service.js";
 import { Hono } from "hono";
-import authorRouter from "./endpoints/authors.js";
-import bookRouter from "./endpoints/books.js";
+import { createAuthorRouter } from "./endpoints/authors.js";
+import { createBookRouter } from "./endpoints/books.js";
 
-const apiRouter = new Hono();
+export interface ApiV1Services {
+  authorService: AuthorService;
+  bookService: BookService;
+}
 
-apiRouter.route("/books", bookRouter);
-apiRouter.route("/authors", authorRouter);
+export const createApiV1Router = ({
+  authorService,
+  bookService,
+}: ApiV1Services) => {
+  const router = new Hono();
 
-export default apiRouter;
+  router.route("/books", createBookRouter(bookService));
+  router.route("/authors", createAuthorRouter(authorService));
+
+  return router;
+};

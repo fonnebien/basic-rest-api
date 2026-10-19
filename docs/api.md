@@ -2,23 +2,25 @@
 
 ## Authors
 
-| Method   | Endpoint       | Description         |
-| -------- | -------------- | ------------------- |
-| `GET`    | `/authors`     | Get all authors     |
-| `GET`    | `/authors/:id` | Get author by ID    |
-| `POST`   | `/authors`     | Create a new author |
-| `PUT`    | `/authors/:id` | Update an author    |
-| `DELETE` | `/authors/:id` | Delete an author    |
+| Method   | Endpoint                 | Description            |
+| -------- | ------------------------ | ---------------------- |
+| `GET`    | `/authors`               | Get all authors        |
+| `GET`    | `/authors/search?query=` | Search authors by name |
+| `GET`    | `/authors/:id`           | Get author by ID       |
+| `POST`   | `/authors`               | Create a new author    |
+| `PUT`    | `/authors/:id`           | Update an author       |
+| `DELETE` | `/authors/:id`           | Delete an author       |
 
 ## Books
 
-| Method   | Endpoint     | Description       |
-| -------- | ------------ | ----------------- |
-| `GET`    | `/books`     | Get all books     |
-| `GET`    | `/books/:id` | Get book by ID    |
-| `POST`   | `/books`     | Create a new book |
-| `PUT`    | `/books/:id` | Update a book     |
-| `DELETE` | `/books/:id` | Delete a book     |
+| Method   | Endpoint               | Description           |
+| -------- | ---------------------- | --------------------- |
+| `GET`    | `/books`               | Get all books         |
+| `GET`    | `/books/search?query=` | Search books by title |
+| `GET`    | `/books/:id`           | Get book by ID        |
+| `POST`   | `/books`               | Create a new book     |
+| `PUT`    | `/books/:id`           | Update a book         |
+| `DELETE` | `/books/:id`           | Delete a book         |
 
 ## Error Handling
 

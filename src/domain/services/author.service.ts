@@ -1,74 +1,49 @@
-import { authors as authorsData } from "@core/index.js";
-import { type Author } from "@models/author.model.js";
-import { Logger } from "@utils/logger.util.js";
-
-const authors: Author[] = authorsData as Author[];
+import type { LoggerPort } from "@domain/ports/logger.port.js";
+import {
+  type Author,
+  type AuthorCreation,
+  type AuthorUpdate,
+} from "@models/author.model.js";
+import type { AuthorRepository } from "@repositories/author.repository.js";
 
 export class AuthorService {
   constructor(
-    private logger: Logger = Logger.getInstance("api:service:author"),
+    private repository: AuthorRepository,
+    private logger: LoggerPort,
   ) {}
 
   async getAllAuthors(): Promise<Author[]> {
     this.logger.info("Fetching all authors");
-    return authors;
+    return this.repository.findAll();
   }
 
   async getAuthorById(id: string): Promise<Author | null> {
     this.logger.info(`Fetching author with ID: ${id}`);
-
-    const author = authors.find((author) => author.id === id);
-
-    return author || null;
+    return this.repository.findById(id);
   }
 
-  async createAuthor(author: Author): Promise<Author> {
+  async createAuthor(author: AuthorCreation): Promise<Author> {
     this.logger.info("Creating a new author");
-
-    authors.push(author);
-
-    return author;
+    return this.repository.create({ ...author, id: crypto.randomUUID() });
   }
 
   async updateAuthor(
     id: string,
-    updatedAuthor: Partial<Author>,
+    changes: AuthorUpdate,
   ): Promise<Author | null> {
     this.logger.info(`Updating author with ID: ${id}`);
-
-    const index = authors.findIndex((author) => author.id === id);
-
-    if (index === -1) {
-      return null;
-    }
-
-    if (!authors[index]) {
-      return null;
-    }
-
-    authors[index] = {
-      ...authors[index],
-      name: updatedAuthor.name ?? authors[index].name,
-    };
-    return authors[index];
+    return this.repository.update(id, changes);
   }
 
   async deleteAuthor(id: string): Promise<boolean> {
     this.logger.info(`Deleting author with ID: ${id}`);
-
-    const index = authors.findIndex((author) => author.id === id);
-
-    if (index === -1) {
-      return false;
-    }
-
-    authors.splice(index, 1);
-    return true;
+    return this.repository.delete(id);
   }
 
   async searchAuthors(query: string): Promise<Author[]> {
     this.logger.info(`Searching authors with query: ${query}`);
 
+    const authors = await this.repository.findAll();
     return authors.filter((author) =>
       author.name.toLowerCase().includes(query.toLowerCase()),
     );

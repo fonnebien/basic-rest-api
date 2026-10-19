@@ -17,8 +17,8 @@
       "@errors/*": ["./src/domain/errors/*"],
       "@middleware/*": ["./src/middleware/*"],
       "@validations/*": ["./src/validations/*"],
-      "@core/*": ["./src/core/*"],
-      "@routes/*": ["./src/routes/*"],
+      "@repositories/*": ["./src/domain/repositories/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
       "@utils/*": ["./src/utils/*"]
     },
 

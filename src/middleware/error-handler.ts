@@ -10,40 +10,36 @@ import type {
   ValidationError,
 } from "@domain/errors/api-error.js";
 import { Logger } from "@utils/logger.util.js";
-import { type Context, type MiddlewareHandler } from "hono";
+import type { ErrorHandler } from "hono";
+import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
 const logger = Logger.getInstance("api:middleware:error-handler");
 
-export const errorHandler = (): MiddlewareHandler => {
-  return async (c: Context, next: () => Promise<void>) => {
-    try {
-      await next();
-      return;
-    } catch (err) {
-      logger.error("Error caught by error handler:", err as Error);
+export const errorHandler: ErrorHandler = (err, c) => {
+  logger.error("Error caught by error handler:", err);
 
-      if (isAPIError(err)) {
-        return c.json(formatAPIError(err), err.status as ContentfulStatusCode);
-      }
+  if (err instanceof HTTPException) {
+    return c.json(
+      { error: { code: "BAD_REQUEST", message: err.message } },
+      err.status as ContentfulStatusCode,
+    );
+  }
 
-      // Handle unknown errors
-      const serverError: ServerError = {
-        code: "INTERNAL_SERVER_ERROR",
-        message: "An unexpected error occurred",
-        status: 500,
-        isOperational: false,
-        trace:
-          process.env.NODE_ENV === "production"
-            ? undefined
-            : (err as unknown) instanceof Error
-              ? (err as Error).stack
-              : String(err),
-      };
+  if (isAPIError(err)) {
+    return c.json(formatAPIError(err), err.status as ContentfulStatusCode);
+  }
 
-      return c.json(formatAPIError(serverError), 500);
-    }
+  // Handle unknown errors
+  const serverError: ServerError = {
+    code: "INTERNAL_SERVER_ERROR",
+    message: "An unexpected error occurred",
+    status: 500,
+    isOperational: false,
+    trace: process.env.NODE_ENV === "production" ? undefined : err.stack,
   };
+
+  return c.json(formatAPIError(serverError), 500);
 };
 
 function isAPIError(err: unknown): err is APIError {

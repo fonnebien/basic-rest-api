@@ -1,95 +1,74 @@
 import { zValidator } from "@hono/zod-validator";
 import { bookSchema } from "@models/book.model.js";
-import { BookService } from "@services/book.service.js";
+import type { BookService } from "@services/book.service.js";
 import { idValidationSchema } from "@validations/id.schema.js";
 import { Hono } from "hono";
 import type { RequestIdVariables } from "hono/request-id";
 
-const router = new Hono<{ Variables: RequestIdVariables }>();
-const bookService = new BookService();
+export const createBookRouter = (bookService: BookService) => {
+  const router = new Hono<{ Variables: RequestIdVariables }>();
 
-router.get("/", async (c) => {
-  const books = await bookService.getAllBooks();
+  router.get("/", async (c) => {
+    const books = await bookService.getAllBooks();
 
-  return c.json(books);
-});
+    return c.json(books);
+  });
 
-router.get("/:id", zValidator("param", idValidationSchema), async (c) => {
-  const { id } = c.req.valid("param");
+  // Must be registered before "/:id", otherwise "search" is matched as an id.
+  router.get("/search", async (c) => {
+    const query = c.req.query("query");
 
-  if (!id) {
-    return c.json({ error: "ID parameter is required" }, 400);
-  }
+    if (!query) {
+      return c.json({ error: "Query parameter is required" }, 400);
+    }
 
-  const book = await bookService.getBookById(id);
+    const searchResults = await bookService.searchBooks(query);
 
-  if (!book) {
-    return c.json({ error: "Book not found" }, 404);
-  }
+    return c.json(searchResults);
+  });
 
-  return c.json(book);
-});
-
-router.post("/", async (c) => {
-  const book = await c.req.json();
-
-  if (!book) {
-    return c.json({ error: "Book data is required" }, 400);
-  }
-
-  const newBook = await bookService.createBook(book);
-
-  return c.json(newBook);
-});
-
-router.put(
-  "/:id",
-  zValidator("param", idValidationSchema),
-  zValidator("json", bookSchema),
-  async (c) => {
+  router.get("/:id", zValidator("param", idValidationSchema), async (c) => {
     const { id } = c.req.valid("param");
-    const updatedBook = await c.req.valid("json");
 
-    if (!id) {
-      return c.json({ error: "ID parameter is required" }, 400);
-    }
-
-    if (!updatedBook) {
-      return c.json({ error: "Updated book data is required" }, 400);
-    }
-
-    const book = await bookService.updateBook(id, updatedBook);
+    const book = await bookService.getBookById(id);
 
     if (!book) {
       return c.json({ error: "Book not found" }, 404);
     }
 
     return c.json(book);
-  },
-);
+  });
 
-router.delete("/:id", zValidator("param", idValidationSchema), async (c) => {
-  const { id } = c.req.valid("param");
+  router.post("/", zValidator("json", bookSchema), async (c) => {
+    const newBook = await bookService.createBook(c.req.valid("json"));
 
-  if (!id) {
-    return c.json({ error: "ID parameter is required" }, 400);
-  }
+    return c.json(newBook, 201);
+  });
 
-  const bookDeleted = await bookService.deleteBook(id);
+  router.put(
+    "/:id",
+    zValidator("param", idValidationSchema),
+    zValidator("json", bookSchema),
+    async (c) => {
+      const { id } = c.req.valid("param");
 
-  return c.json({ success: bookDeleted });
-});
+      const book = await bookService.updateBook(id, c.req.valid("json"));
 
-router.get("/search", async (c) => {
-  const query = c.req.query("query");
+      if (!book) {
+        return c.json({ error: "Book not found" }, 404);
+      }
 
-  if (!query) {
-    return c.json({ error: "Query parameter is required" }, 400);
-  }
+      return c.json(book);
+    },
+  );
 
-  const searchResults = await bookService.searchBooks(query);
+  router.delete("/:id", zValidator("param", idValidationSchema), async (c) => {
+    const { id } = c.req.valid("param");
 
-  return c.json(searchResults);
-});
+    const bookDeleted = await bookService.deleteBook(id);
 
-export default router;
+    return c.json({ success: bookDeleted });
+  });
+
+  return router;
+};
