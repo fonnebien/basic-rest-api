@@ -50,4 +50,18 @@ Example response for `new ResourceNotFoundError("Author", "42")`:
 }
 ```
 
+Endpoints use them directly: an unknown id throws `ResourceNotFoundError` (404), a missing `query` on `/search` throws `BadRequestError` (400), and request validation failures are reported as `ValidationError` (400) by the `validate()` middleware, which wraps `@hono/zod-validator`:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid request json"
+  },
+  "invalidFields": [{ "field": "title", "message": "Title is required" }]
+}
+```
+
+Malformed JSON bodies return `400 BAD_REQUEST`.
+
 Unexpected (non-`ApiError`) errors become a generic `500 INTERNAL_SERVER_ERROR` without the original message. Hono only passes `Error` instances to `onError`, which is why the typed errors are classes.

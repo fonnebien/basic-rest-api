@@ -44,6 +44,7 @@ describe("authors endpoints", () => {
       const res = await setup().app.request("/api/v1/authors/search");
 
       expect(res.status).toBe(400);
+      expect((await res.json()).error.code).toBe("BAD_REQUEST");
     });
   });
 
@@ -59,7 +60,11 @@ describe("authors endpoints", () => {
       const res = await setup().app.request(`/api/v1/authors/${unknownId}`);
 
       expect(res.status).toBe(404);
-      expect(await res.json()).toEqual({ error: "Author not found" });
+      expect(await res.json()).toMatchObject({
+        error: { code: "RESOURCE_NOT_FOUND" },
+        resource: "Author",
+        identifier: unknownId,
+      });
     });
 
     it("returns 400 for an invalid UUID", async () => {
@@ -91,13 +96,14 @@ describe("authors endpoints", () => {
       ["an empty name", { name: "" }],
       ["a missing name", { bio: "no name" }],
       ["an unparseable birth date", { name: "X", birthDate: "not-a-date" }],
-    ])("returns 400 for %s", async (_name, body) => {
+    ])("returns a validation error for %s", async (_name, body) => {
       const res = await setup().app.request(
         "/api/v1/authors",
         jsonRequest("POST", body),
       );
 
       expect(res.status).toBe(400);
+      expect((await res.json()).error.code).toBe("VALIDATION_ERROR");
     });
   });
 

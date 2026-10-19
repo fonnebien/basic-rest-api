@@ -49,8 +49,9 @@ describe("books endpoints", () => {
       const res = await setup().app.request("/api/v1/books/search");
 
       expect(res.status).toBe(400);
-      expect(await res.json()).toEqual({
-        error: "Query parameter is required",
+      expect(await res.json()).toMatchObject({
+        error: { code: "BAD_REQUEST", message: "Query parameter is required" },
+        invalidParameters: ["query"],
       });
     });
   });
@@ -67,13 +68,21 @@ describe("books endpoints", () => {
       const res = await setup().app.request(`/api/v1/books/${unknownId}`);
 
       expect(res.status).toBe(404);
-      expect(await res.json()).toEqual({ error: "Book not found" });
+      expect(await res.json()).toMatchObject({
+        error: { code: "RESOURCE_NOT_FOUND" },
+        resource: "Book",
+        identifier: unknownId,
+      });
     });
 
     it("returns 400 for an invalid UUID", async () => {
       const res = await setup().app.request("/api/v1/books/not-a-uuid");
 
       expect(res.status).toBe(400);
+      expect(await res.json()).toMatchObject({
+        error: { code: "VALIDATION_ERROR" },
+        invalidFields: [{ field: "id", message: "Invalid UUID format for ID" }],
+      });
     });
   });
 
@@ -113,13 +122,30 @@ describe("books endpoints", () => {
         "a year in the future",
         { ...validBody, publicationYear: new Date().getFullYear() + 1 },
       ],
-    ])("returns 400 for %s", async (_name, body) => {
+    ])("returns a validation error for %s", async (_name, body) => {
       const res = await setup().app.request(
         "/api/v1/books",
         jsonRequest("POST", body),
       );
 
       expect(res.status).toBe(400);
+      expect((await res.json()).error.code).toBe("VALIDATION_ERROR");
+    });
+
+    it("lists the invalid fields", async () => {
+      const res = await setup().app.request(
+        "/api/v1/books",
+        jsonRequest("POST", {
+          title: "",
+          authorId: "nope",
+          publicationYear: 1965,
+        }),
+      );
+
+      expect((await res.json()).invalidFields).toEqual([
+        { field: "title", message: "Title is required" },
+        { field: "authorId", message: "Invalid UUID format" },
+      ]);
     });
 
     it("returns 400 for malformed JSON", async () => {

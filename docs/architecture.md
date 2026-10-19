@@ -22,7 +22,8 @@ src
 │   ├── logger/              # Pino-backed LoggerPort implementation
 │   └── repositories/        # In-memory repository implementations
 ├── middleware/
-│   └── error-handler.middleware.ts  # Global error handler (app.onError)
+│   ├── error-handler.middleware.ts  # Global error handler (app.onError)
+│   └── validate.middleware.ts       # zValidator wrapper that throws ValidationError
 ├── app.ts                   # createApp(services): middleware, routes, error handler
 ├── testing/                 # createTestApp(): app wired with fakes for tests
 ├── container.ts             # Composition root: wires repositories into services
