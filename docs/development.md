@@ -17,7 +17,7 @@ pnpm test         # Run tests
 pnpm test:watch   # Run tests in watch mode
 ```
 
-Tests live next to the code as `*.test.ts`. Service tests inject in-memory fakes from `src/domain/testing/` (`Fake*Repository`, `silentLogger`) instead of touching infrastructure. Test files and `testing/` are excluded from the `tsc` build.
+Tests live next to the code as `*.test.ts`. Service tests inject in-memory fakes from `src/domain/testing/` (`Fake*Repository`, `silentLogger`) instead of touching infrastructure. Endpoint tests (`*.endpoint.test.ts`, `app.test.ts`) call the real Hono app through `app.request()`. `createTestApp()` in `src/testing/` builds it with `createApp()` and fake repositories, so no server or port is needed. `LOG_LEVEL=silent` is set in `jest.setup.js` to keep test output clean. Test files and every `testing/` folder are excluded from the `tsc` build.
 
 ## Code Quality
 

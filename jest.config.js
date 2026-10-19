@@ -3,6 +3,7 @@ export default {
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
+  setupFiles: ["<rootDir>/jest.setup.js"],
   moduleNameMapper: {
     "^@api/(.*)\\.js$": "<rootDir>/src/api/$1",
     "^@domain/(.*)\\.js$": "<rootDir>/src/domain/$1",

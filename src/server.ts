@@ -1,8 +1,10 @@
 import { serve } from "@hono/node-server";
 import { Logger } from "@infrastructure/logger/pino.logger.js";
-import { app } from "./app.js";
+import { createApp } from "./app.js";
+import { authorService, bookService } from "./container.js";
 
 const logger = Logger.getInstance("api:server");
+const app = createApp({ authorService, bookService });
 
 serve(
   {

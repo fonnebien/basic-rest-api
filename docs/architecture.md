@@ -23,9 +23,10 @@ src
 │   └── repositories/        # In-memory repository implementations
 ├── middleware/
 │   └── error-handler.middleware.ts  # Global error handler (app.onError)
-├── app.ts                   # Hono app: middleware, routes, error handler
+├── app.ts                   # createApp(services): middleware, routes, error handler
+├── testing/                 # createTestApp(): app wired with fakes for tests
 ├── container.ts             # Composition root: wires repositories into services
-└── server.ts                # Entry point: starts the HTTP server
+└── server.ts                # Entry point: createApp(container services) + serve
 ```
 
 ## Naming convention
