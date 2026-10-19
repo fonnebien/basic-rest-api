@@ -24,14 +24,30 @@
 
 ## Error Handling
 
-All errors follow a consistent typed structure:
+Errors are thrown as typed classes from `src/domain/errors/api-error.classes.ts` (all extend `ApiError`, which extends `Error`) and turned into responses by `app.onError`. The interfaces they implement live in `api-error.types.ts`.
+
+| Class                   | Status | Code                    | Extra response fields                   |
+| ----------------------- | ------ | ----------------------- | --------------------------------------- |
+| `ValidationError`       | 400    | `VALIDATION_ERROR`      | `invalidFields`                         |
+| `BadRequestError`       | 400    | `BAD_REQUEST`           | `invalidParameters`                     |
+| `AuthenticationError`   | 401    | `AUTHENTICATION_ERROR`  | `authFailure`                           |
+| `AuthorizationError`    | 403    | `AUTHORIZATION_ERROR`   | `requiredPermission`, `requiredRole`    |
+| `ResourceNotFoundError` | 404    | `RESOURCE_NOT_FOUND`    | `resource`, `identifier`                |
+| `ConflictError`         | 409    | `CONFLICT`              | `conflictingResource`, `conflictReason` |
+| `RateLimitError`        | 429    | `RATE_LIMIT_EXCEEDED`   | `retryAfter`, `limit`, `remaining`      |
+| `ServerError`           | 500    | `INTERNAL_SERVER_ERROR` | `trace` (omitted in production)         |
+
+Example response for `new ResourceNotFoundError("Author", "42")`:
 
 ```json
 {
-  "code": "RESOURCE_NOT_FOUND",
-  "message": "Author with id '42' was not found.",
-  "status": 404
+  "error": {
+    "code": "RESOURCE_NOT_FOUND",
+    "message": "Author with id '42' was not found."
+  },
+  "resource": "Author",
+  "identifier": "42"
 }
 ```
 
-Specialised error types include `ValidationError`, `AuthenticationError`, `AuthorizationError`, `ResourceNotFoundError`, `RateLimitError`, `ConflictError`, and `ServerError`.
+Unexpected (non-`ApiError`) errors become a generic `500 INTERNAL_SERVER_ERROR` without the original message. Hono only passes `Error` instances to `onError`, which is why the typed errors are classes.

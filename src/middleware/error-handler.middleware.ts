@@ -1,5 +1,5 @@
-import type {
-  APIError,
+import {
+  ApiError,
   AuthenticationError,
   AuthorizationError,
   BadRequestError,
@@ -8,7 +8,7 @@ import type {
   ResourceNotFoundError,
   ServerError,
   ValidationError,
-} from "@domain/errors/api-error.types.js";
+} from "@domain/errors/api-error.classes.js";
 import { Logger } from "@infrastructure/logger/pino.logger.js";
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -26,33 +26,19 @@ export const errorHandler: ErrorHandler = (err, c) => {
     );
   }
 
-  if (isAPIError(err)) {
-    return c.json(formatAPIError(err), err.status as ContentfulStatusCode);
+  if (err instanceof ApiError) {
+    return c.json(formatApiError(err), err.status as ContentfulStatusCode);
   }
 
   // Handle unknown errors
-  const serverError: ServerError = {
-    code: "INTERNAL_SERVER_ERROR",
-    message: "An unexpected error occurred",
-    status: 500,
-    isOperational: false,
+  const serverError = new ServerError(undefined, {
     trace: process.env.NODE_ENV === "production" ? undefined : err.stack,
-  };
+  });
 
-  return c.json(formatAPIError(serverError), 500);
+  return c.json(formatApiError(serverError), 500);
 };
 
-function isAPIError(err: unknown): err is APIError {
-  return (
-    typeof err === "object" &&
-    err !== null &&
-    "code" in err &&
-    "message" in err &&
-    "status" in err
-  );
-}
-
-function formatAPIError(error: APIError): Record<string, unknown> {
+function formatApiError(error: ApiError): Record<string, unknown> {
   const baseError = {
     error: {
       code: error.code,
@@ -62,21 +48,15 @@ function formatAPIError(error: APIError): Record<string, unknown> {
   };
 
   // Add specific fields for different error types
-  if (isValidationError(error)) {
-    return {
-      ...baseError,
-      invalidFields: error.invalidFields,
-    };
+  if (error instanceof ValidationError) {
+    return { ...baseError, invalidFields: error.invalidFields };
   }
 
-  if (isAuthenticationError(error)) {
-    return {
-      ...baseError,
-      authFailure: error.authFailure,
-    };
+  if (error instanceof AuthenticationError) {
+    return { ...baseError, authFailure: error.authFailure };
   }
 
-  if (isAuthorizationError(error)) {
+  if (error instanceof AuthorizationError) {
     return {
       ...baseError,
       requiredPermission: error.requiredPermission,
@@ -84,7 +64,7 @@ function formatAPIError(error: APIError): Record<string, unknown> {
     };
   }
 
-  if (isResourceNotFoundError(error)) {
+  if (error instanceof ResourceNotFoundError) {
     return {
       ...baseError,
       resource: error.resource,
@@ -92,7 +72,7 @@ function formatAPIError(error: APIError): Record<string, unknown> {
     };
   }
 
-  if (isRateLimitError(error)) {
+  if (error instanceof RateLimitError) {
     return {
       ...baseError,
       retryAfter: error.retryAfter,
@@ -101,15 +81,18 @@ function formatAPIError(error: APIError): Record<string, unknown> {
     };
   }
 
-  if (isServerError(error)) {
-    const response = { ...baseError };
-    if (process.env.NODE_ENV !== "production" && error.trace) {
-      (response.error as ServerError).trace = error.trace;
-    }
-    return response;
+  if (error instanceof ServerError) {
+    return {
+      error: {
+        ...baseError.error,
+        ...(process.env.NODE_ENV !== "production" && error.trace
+          ? { trace: error.trace }
+          : {}),
+      },
+    };
   }
 
-  if (isConflictError(error)) {
+  if (error instanceof ConflictError) {
     return {
       ...baseError,
       conflictingResource: error.conflictingResource,
@@ -117,46 +100,9 @@ function formatAPIError(error: APIError): Record<string, unknown> {
     };
   }
 
-  if (isBadRequestError(error)) {
-    return {
-      ...baseError,
-      invalidParameters: error.invalidParameters,
-    };
+  if (error instanceof BadRequestError) {
+    return { ...baseError, invalidParameters: error.invalidParameters };
   }
 
   return baseError;
-}
-
-function isValidationError(error: APIError): error is ValidationError {
-  return "invalidFields" in error;
-}
-
-function isAuthenticationError(error: APIError): error is AuthenticationError {
-  return "authFailure" in error;
-}
-
-function isAuthorizationError(error: APIError): error is AuthorizationError {
-  return "requiredPermission" in error || "requiredRole" in error;
-}
-
-function isResourceNotFoundError(
-  error: APIError,
-): error is ResourceNotFoundError {
-  return "resource" in error;
-}
-
-function isRateLimitError(error: APIError): error is RateLimitError {
-  return "retryAfter" in error;
-}
-
-function isServerError(error: APIError): error is ServerError {
-  return "isOperational" in error;
-}
-
-function isConflictError(error: APIError): error is ConflictError {
-  return "conflictingResource" in error || "conflictReason" in error;
-}
-
-function isBadRequestError(error: APIError): error is BadRequestError {
-  return "invalidParameters" in error;
 }

@@ -1,4 +1,13 @@
 import { describe, expect, it, jest } from "@jest/globals";
+import {
+  AuthenticationError,
+  AuthorizationError,
+  BadRequestError,
+  ConflictError,
+  RateLimitError,
+  ResourceNotFoundError,
+  ValidationError,
+} from "@domain/errors/api-error.classes.js";
 import { createTestApp } from "./testing/create-test-app.js";
 
 describe("app", () => {
@@ -25,22 +34,60 @@ describe("app", () => {
   describe("error handler", () => {
     it("maps typed API errors to their status and payload", async () => {
       const { app, bookService } = createTestApp();
-      // Hono only passes Error instances to onError, so typed API errors
-      // must be thrown as Errors that carry the API error fields.
-      jest.spyOn(bookService, "getAllBooks").mockRejectedValue(
-        Object.assign(new Error("Book was not found"), {
-          code: "RESOURCE_NOT_FOUND",
-          status: 404,
-          resource: "book",
-        }),
-      );
+      jest
+        .spyOn(bookService, "getAllBooks")
+        .mockRejectedValue(new ResourceNotFoundError("Book", "42"));
 
       const res = await app.request("/api/v1/books");
 
       expect(res.status).toBe(404);
       expect(await res.json()).toMatchObject({
-        error: { code: "RESOURCE_NOT_FOUND", message: "Book was not found" },
-        resource: "book",
+        error: {
+          code: "RESOURCE_NOT_FOUND",
+          message: "Book with id '42' was not found.",
+        },
+        resource: "Book",
+        identifier: "42",
+      });
+    });
+
+    it.each([
+      [
+        new ValidationError([{ field: "title", message: "Required" }]),
+        400,
+        { invalidFields: [{ field: "title", message: "Required" }] },
+      ],
+      [
+        new AuthenticationError("missing_token"),
+        401,
+        { authFailure: "missing_token" },
+      ],
+      [
+        new AuthorizationError("No", { role: "admin" }),
+        403,
+        { requiredRole: "admin" },
+      ],
+      [
+        new ConflictError("Dup", { reason: "same title" }),
+        409,
+        { conflictReason: "same title" },
+      ],
+      [
+        new RateLimitError(30, 100, 0),
+        429,
+        { retryAfter: 30, limit: 100, remaining: 0 },
+      ],
+      [new BadRequestError("Bad", ["q"]), 400, { invalidParameters: ["q"] }],
+    ])("includes type-specific fields for %p", async (error, status, extra) => {
+      const { app, bookService } = createTestApp();
+      jest.spyOn(bookService, "getAllBooks").mockRejectedValue(error);
+
+      const res = await app.request("/api/v1/books");
+
+      expect(res.status).toBe(status);
+      expect(await res.json()).toMatchObject({
+        error: { code: error.code, message: error.message },
+        ...extra,
       });
     });
 

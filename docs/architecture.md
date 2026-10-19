@@ -11,7 +11,7 @@ src
 │       ├── schemas/         # Zod request schemas (*.schema.ts)
 │       └── v1.router.ts     # v1 router composition (createApiV1Router)
 ├── domain/                  # Business logic — no external dependencies
-│   ├── errors/              # Typed error interfaces
+│   ├── errors/              # Typed error interfaces (*.types.ts) and Error classes (*.classes.ts)
 │   ├── models/              # Plain domain types (Author, Book)
 │   ├── ports/               # Interfaces for outward needs (LoggerPort)
 │   ├── repositories/        # Repository interfaces (implemented in infrastructure)
@@ -31,7 +31,7 @@ src
 
 ## Naming convention
 
-Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`, `in-memory-book.repository.ts`, `id.schema.ts`. Roles in use: `model`, `service`, `repository`, `port`, `endpoint`, `schema`, `router`, `middleware`, `types`, `logger`. The composition files at the `src/` root (`app.ts`, `container.ts`, `server.ts`) are the exception.
+Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`, `in-memory-book.repository.ts`, `id.schema.ts`. Roles in use: `model`, `service`, `repository`, `port`, `endpoint`, `schema`, `router`, `middleware`, `types`, `classes`, `logger`. The composition files at the `src/` root (`app.ts`, `container.ts`, `server.ts`) are the exception.
 
 ## Validation
 
