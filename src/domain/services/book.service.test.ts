@@ -1,4 +1,4 @@
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it } from "vitest";
 import type { Book } from "@models/book.model.js";
 import { BookService } from "@services/book.service.js";
 import { FakeBookRepository } from "../testing/fake-book.repository.js";

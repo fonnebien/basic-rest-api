@@ -1,4 +1,4 @@
-import { describe, expect, it, jest } from "@jest/globals";
+import { describe, expect, it, vi } from "vitest";
 import {
   AuthenticationError,
   AuthorizationError,
@@ -34,9 +34,9 @@ describe("app", () => {
   describe("error handler", () => {
     it("maps typed API errors to their status and payload", async () => {
       const { app, bookService } = createTestApp();
-      jest
-        .spyOn(bookService, "getAllBooks")
-        .mockRejectedValue(new ResourceNotFoundError("Book", "42"));
+      vi.spyOn(bookService, "getAllBooks").mockRejectedValue(
+        new ResourceNotFoundError("Book", "42"),
+      );
 
       const res = await app.request("/api/v1/books");
 
@@ -80,7 +80,7 @@ describe("app", () => {
       [new BadRequestError("Bad", ["q"]), 400, { invalidParameters: ["q"] }],
     ])("includes type-specific fields for %p", async (error, status, extra) => {
       const { app, bookService } = createTestApp();
-      jest.spyOn(bookService, "getAllBooks").mockRejectedValue(error);
+      vi.spyOn(bookService, "getAllBooks").mockRejectedValue(error);
 
       const res = await app.request("/api/v1/books");
 
@@ -93,9 +93,9 @@ describe("app", () => {
 
     it("hides the message of unexpected errors behind a 500", async () => {
       const { app, bookService } = createTestApp();
-      jest
-        .spyOn(bookService, "getAllBooks")
-        .mockRejectedValue(new Error("database password is hunter2"));
+      vi.spyOn(bookService, "getAllBooks").mockRejectedValue(
+        new Error("database password is hunter2"),
+      );
 
       const res = await app.request("/api/v1/books");
       const body = await res.json();
@@ -109,7 +109,7 @@ describe("app", () => {
 
     it("omits the stack trace in production", async () => {
       const { app, bookService } = createTestApp();
-      jest.spyOn(bookService, "getAllBooks").mockRejectedValue(new Error("x"));
+      vi.spyOn(bookService, "getAllBooks").mockRejectedValue(new Error("x"));
       const previous = process.env.NODE_ENV;
       process.env.NODE_ENV = "production";
 

@@ -20,4 +20,4 @@ Personal REST API playground (Hono + TypeScript) for practising backend best pra
 - pnpm only (no npm/yarn).
 - ESLint + Prettier. Biome was removed deliberately; do not reintroduce it.
 - Before finishing a change, run `pnpm lint:check`, `pnpm format:check` and `pnpm build`.
-- Jest is configured but there are no tests yet; add tests alongside new logic where sensible.
+- Vitest runs the tests (`pnpm test`); add tests alongside new logic where sensible.

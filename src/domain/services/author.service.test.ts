@@ -1,4 +1,4 @@
-import { describe, expect, it } from "@jest/globals";
+import { describe, expect, it } from "vitest";
 import type { Author } from "@models/author.model.js";
 import { AuthorService } from "@services/author.service.js";
 import { FakeAuthorRepository } from "../testing/fake-author.repository.js";
