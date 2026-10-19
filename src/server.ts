@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { Logger } from "@utils/logger.util.js";
+import { Logger } from "@infrastructure/logger/pino.logger.js";
 import { app } from "./app.js";
 
 const logger = Logger.getInstance("api:server");

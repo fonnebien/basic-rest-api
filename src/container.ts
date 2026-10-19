@@ -2,7 +2,7 @@ import { InMemoryAuthorRepository } from "@infrastructure/repositories/in-memory
 import { InMemoryBookRepository } from "@infrastructure/repositories/in-memory-book.repository.js";
 import { AuthorService } from "@services/author.service.js";
 import { BookService } from "@services/book.service.js";
-import { Logger } from "@utils/logger.util.js";
+import { Logger } from "@infrastructure/logger/pino.logger.js";
 
 export const authorService = new AuthorService(
   new InMemoryAuthorRepository(),

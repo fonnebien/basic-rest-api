@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
-import { authorSchema } from "@models/author.model.js";
+import { authorSchema } from "@api/v1/schemas/author.schema.js";
 import type { AuthorService } from "@services/author.service.js";
-import { idValidationSchema } from "@validations/id.schema.js";
+import { idValidationSchema } from "@api/v1/schemas/id.schema.js";
 import { Hono } from "hono";
 import type { RequestIdVariables } from "hono/request-id";
 

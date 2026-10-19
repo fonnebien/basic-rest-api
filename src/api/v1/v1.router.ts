@@ -1,8 +1,8 @@
 import type { AuthorService } from "@services/author.service.js";
 import type { BookService } from "@services/book.service.js";
 import { Hono } from "hono";
-import { createAuthorRouter } from "./endpoints/authors.js";
-import { createBookRouter } from "./endpoints/books.js";
+import { createAuthorRouter } from "./endpoints/author.endpoint.js";
+import { createBookRouter } from "./endpoints/book.endpoint.js";
 
 export interface ApiV1Services {
   authorService: AuthorService;

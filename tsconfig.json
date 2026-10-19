@@ -16,10 +16,8 @@
       "@services/*": ["./src/domain/services/*"],
       "@errors/*": ["./src/domain/errors/*"],
       "@middleware/*": ["./src/middleware/*"],
-      "@validations/*": ["./src/validations/*"],
       "@repositories/*": ["./src/domain/repositories/*"],
-      "@infrastructure/*": ["./src/infrastructure/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@infrastructure/*": ["./src/infrastructure/*"]
     },
 
     /* Emit */

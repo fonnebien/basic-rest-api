@@ -1,7 +1,8 @@
+import type { LoggerPort } from "@domain/ports/logger.port.js";
 import { type Logger as PinoLogger, pino } from "pino";
 import pinoPretty from "pino-pretty";
 
-export class Logger {
+export class Logger implements LoggerPort {
   private static instances: Map<string, Logger> = new Map();
   private logger: PinoLogger;
   private serviceName: string;

@@ -8,8 +8,8 @@ import type {
   ResourceNotFoundError,
   ServerError,
   ValidationError,
-} from "@domain/errors/api-error.js";
-import { Logger } from "@utils/logger.util.js";
+} from "@domain/errors/api-error.types.js";
+import { Logger } from "@infrastructure/logger/pino.logger.js";
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";

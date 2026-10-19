@@ -12,7 +12,7 @@ Personal REST API playground (Hono + TypeScript) for practising backend best pra
 
 - Clean Architecture: dependencies point inward. `src/domain/` must not import Hono, JSON data files or any infrastructure code.
 - Endpoints live in `src/api/v1/endpoints/`, one file per resource; business logic belongs in `src/domain/services/`.
-- Errors use the typed structures in `src/domain/errors/api-error.ts` and are handled by `src/middleware/error-handler.ts`.
+- Errors use the typed structures in `src/domain/errors/api-error.types.ts` and are handled by `src/middleware/error-handler.middleware.ts`.
 - Validate input with Zod schemas.
 
 ## Tooling

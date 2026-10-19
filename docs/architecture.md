@@ -6,28 +6,34 @@
 src
 ├── api/
 │   └── v1/
-│       ├── endpoints/       # Router factories per resource (authors, books)
+│       ├── endpoints/       # Router factories per resource (*.endpoint.ts)
 │       ├── responses/       # Typed HTTP response shapes (e.g. error response)
-│       └── router.ts        # v1 router composition (createApiV1Router)
+│       ├── schemas/         # Zod request schemas (*.schema.ts)
+│       └── v1.router.ts     # v1 router composition (createApiV1Router)
 ├── domain/                  # Business logic — no external dependencies
 │   ├── errors/              # Typed error interfaces
-│   ├── models/              # Domain entities (Author, Book)
+│   ├── models/              # Plain domain types (Author, Book)
 │   ├── ports/               # Interfaces for outward needs (LoggerPort)
 │   ├── repositories/        # Repository interfaces (implemented in infrastructure)
 │   └── services/            # Business logic per resource
 ├── infrastructure/
 │   ├── data/                # JSON data files (authors.json, books.json)
+│   ├── logger/              # Pino-backed LoggerPort implementation
 │   └── repositories/        # In-memory repository implementations
 ├── middleware/
-│   └── error-handler.ts     # Global error handler (app.onError)
-├── utils/
-│   └── logger.util.ts       # Logging utility
-├── validations/
-│   └── id.schema.ts         # Shared input validation schemas
+│   └── error-handler.middleware.ts  # Global error handler (app.onError)
 ├── app.ts                   # Hono app: middleware, routes, error handler
 ├── container.ts             # Composition root: wires repositories into services
 └── server.ts                # Entry point: starts the HTTP server
 ```
+
+## Naming convention
+
+Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`, `in-memory-book.repository.ts`, `id.schema.ts`. Roles in use: `model`, `service`, `repository`, `port`, `endpoint`, `schema`, `router`, `middleware`, `types`, `logger`. The composition files at the `src/` root (`app.ts`, `container.ts`, `server.ts`) are the exception.
+
+## Validation
+
+Request validation lives in the API layer: Zod schemas in `api/v1/schemas/` are applied with `zValidator` in the endpoints. The domain only knows plain TypeScript types, so it does not depend on Zod.
 
 ## Principles
 

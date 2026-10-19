@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
-import { bookSchema } from "@models/book.model.js";
+import { bookSchema } from "@api/v1/schemas/book.schema.js";
 import type { BookService } from "@services/book.service.js";
-import { idValidationSchema } from "@validations/id.schema.js";
+import { idValidationSchema } from "@api/v1/schemas/id.schema.js";
 import { Hono } from "hono";
 import type { RequestIdVariables } from "hono/request-id";
 
