@@ -10,12 +10,14 @@ pnpm start   # Start production server (requires a build)
 
 ## Testing
 
-Jest is set up, but no tests have been written yet.
+Jest runs in ESM mode via ts-jest (the scripts pass `--experimental-vm-modules`, so a Node experimental warning is expected).
 
 ```bash
 pnpm test         # Run tests
 pnpm test:watch   # Run tests in watch mode
 ```
+
+Tests live next to the code as `*.test.ts`. Service tests inject in-memory fakes from `src/domain/testing/` (`Fake*Repository`, `silentLogger`) instead of touching infrastructure. Test files and `testing/` are excluded from the `tsc` build.
 
 ## Code Quality
 

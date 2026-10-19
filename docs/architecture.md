@@ -15,7 +15,8 @@ src
 │   ├── models/              # Plain domain types (Author, Book)
 │   ├── ports/               # Interfaces for outward needs (LoggerPort)
 │   ├── repositories/        # Repository interfaces (implemented in infrastructure)
-│   └── services/            # Business logic per resource
+│   ├── services/            # Business logic per resource (+ colocated *.test.ts)
+│   └── testing/             # Test doubles: fake repositories, silent logger
 ├── infrastructure/
 │   ├── data/                # JSON data files (authors.json, books.json)
 │   ├── logger/              # Pino-backed LoggerPort implementation
