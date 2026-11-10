@@ -36,7 +36,7 @@ Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`
 
 ## Path aliases
 
-Imports use aliases with a `.js` extension (for example `@services/book.service.js`): `@api/`, `@domain/`, `@models/`, `@services/`, `@errors/`, `@repositories/`, `@infrastructure/` and `@middleware/`. They are declared in `tsconfig.json` (`paths`) and mirrored in `vitest.config.ts` (`resolve.alias`), so a new alias must be added in both. `tsx` and `tsc` resolve them from `tsconfig.json`.
+Imports use Node subpath imports with a `.js` extension (for example `#domain/services/book.service.js`): `#api/*`, `#domain/*`, `#infrastructure/*` and `#middleware/*`. They are declared once, in the `imports` field of `package.json`, with a `source` condition (`src/`) and a `default` condition (`dist/`). `tsc` (`customConditions`), `tsx` (`--conditions=source`) and Vitest (`resolve.conditions`) enable `source`; `node dist/server.js` uses `default`. A new prefix only needs an entry in `package.json`. See [ADR 0001](adr/0001-native-subpath-imports.md).
 
 ## Validation
 

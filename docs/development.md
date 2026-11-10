@@ -10,7 +10,7 @@ pnpm start   # Start production server (requires a build)
 
 ## Testing
 
-Vitest runs the tests natively as ES modules (no experimental Node flags). Config and path aliases are in `vitest.config.ts`; keep the aliases in sync with `tsconfig.json`.
+Vitest runs the tests natively as ES modules (no experimental Node flags). Config is in `vitest.config.ts`; the `#…` imports resolve through the `source` condition (see [ADR 0001](adr/0001-native-subpath-imports.md)).
 
 ```bash
 pnpm test         # Run tests

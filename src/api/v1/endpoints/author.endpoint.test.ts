@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Author } from "@models/author.model.js";
+import type { Author } from "#domain/models/author.model.js";
 import {
   createTestApp,
   jsonRequest,

@@ -1,4 +1,4 @@
-import type { LoggerPort } from "@domain/ports/logger.port.js";
+import type { LoggerPort } from "#domain/ports/logger.port.js";
 import { type Logger as PinoLogger, pino } from "pino";
 import pinoPretty from "pino-pretty";
 

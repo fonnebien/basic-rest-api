@@ -4,8 +4,26 @@
   "private": true,
   "description": "Personal REST API playground (Hono + TypeScript) for practising backend best practices",
   "type": "module",
+  "imports": {
+    "#api/*": {
+      "source": "./src/api/*",
+      "default": "./dist/api/*"
+    },
+    "#domain/*": {
+      "source": "./src/domain/*",
+      "default": "./dist/domain/*"
+    },
+    "#infrastructure/*": {
+      "source": "./src/infrastructure/*",
+      "default": "./dist/infrastructure/*"
+    },
+    "#middleware/*": {
+      "source": "./src/middleware/*",
+      "default": "./dist/middleware/*"
+    }
+  },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch --conditions=source src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "vitest run",

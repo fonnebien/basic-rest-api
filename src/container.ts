@@ -1,8 +1,8 @@
-import { InMemoryAuthorRepository } from "@infrastructure/repositories/in-memory-author.repository.js";
-import { InMemoryBookRepository } from "@infrastructure/repositories/in-memory-book.repository.js";
-import { AuthorService } from "@services/author.service.js";
-import { BookService } from "@services/book.service.js";
-import { Logger } from "@infrastructure/logger/pino.logger.js";
+import { InMemoryAuthorRepository } from "#infrastructure/repositories/in-memory-author.repository.js";
+import { InMemoryBookRepository } from "#infrastructure/repositories/in-memory-book.repository.js";
+import { AuthorService } from "#domain/services/author.service.js";
+import { BookService } from "#domain/services/book.service.js";
+import { Logger } from "#infrastructure/logger/pino.logger.js";
 
 export const authorService = new AuthorService(
   new InMemoryAuthorRepository(),

@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { Logger } from "@infrastructure/logger/pino.logger.js";
+import { Logger } from "#infrastructure/logger/pino.logger.js";
 import { createApp } from "./app.js";
 import { authorService, bookService } from "./container.js";
 

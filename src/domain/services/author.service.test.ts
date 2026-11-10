@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { Author } from "@models/author.model.js";
-import { AuthorService } from "@services/author.service.js";
+import type { Author } from "#domain/models/author.model.js";
+import { AuthorService } from "#domain/services/author.service.js";
 import { FakeAuthorRepository } from "../testing/fake-author.repository.js";
 import { silentLogger } from "../testing/silent.logger.js";
 

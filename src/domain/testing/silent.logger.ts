@@ -1,4 +1,4 @@
-import type { LoggerPort } from "@domain/ports/logger.port.js";
+import type { LoggerPort } from "#domain/ports/logger.port.js";
 
 export const silentLogger: LoggerPort = {
   debug: () => undefined,

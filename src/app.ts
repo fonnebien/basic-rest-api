@@ -1,6 +1,6 @@
-import { createApiV1Router, type ApiV1Services } from "@api/v1/v1.router.js";
-import { errorHandler } from "@middleware/error-handler.middleware.js";
-import { Logger } from "@infrastructure/logger/pino.logger.js";
+import { createApiV1Router, type ApiV1Services } from "#api/v1/v1.router.js";
+import { errorHandler } from "#middleware/error-handler.middleware.js";
+import { Logger } from "#infrastructure/logger/pino.logger.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";

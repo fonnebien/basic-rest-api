@@ -1,5 +1,5 @@
-import type { Author } from "@models/author.model.js";
-import type { AuthorRepository } from "@repositories/author.repository.js";
+import type { Author } from "#domain/models/author.model.js";
+import type { AuthorRepository } from "#domain/repositories/author.repository.js";
 
 export class FakeAuthorRepository implements AuthorRepository {
   constructor(private authors: Author[] = []) {}

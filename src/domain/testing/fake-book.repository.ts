@@ -1,5 +1,5 @@
-import type { Book } from "@models/book.model.js";
-import type { BookRepository } from "@repositories/book.repository.js";
+import type { Book } from "#domain/models/book.model.js";
+import type { BookRepository } from "#domain/repositories/book.repository.js";
 
 export class FakeBookRepository implements BookRepository {
   constructor(private books: Book[] = []) {}

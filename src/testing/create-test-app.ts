@@ -1,7 +1,7 @@
-import type { Author } from "@models/author.model.js";
-import type { Book } from "@models/book.model.js";
-import { AuthorService } from "@services/author.service.js";
-import { BookService } from "@services/book.service.js";
+import type { Author } from "#domain/models/author.model.js";
+import type { Book } from "#domain/models/book.model.js";
+import { AuthorService } from "#domain/services/author.service.js";
+import { BookService } from "#domain/services/book.service.js";
 import { createApp } from "../app.js";
 import { FakeAuthorRepository } from "../domain/testing/fake-author.repository.js";
 import { FakeBookRepository } from "../domain/testing/fake-book.repository.js";
