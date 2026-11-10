@@ -37,3 +37,14 @@ This repo is used to explore and solidify:
 - Input validation patterns
 - REST API design conventions
 - Tooling setup (ESLint, Prettier, pnpm workspaces, tsconfig)
+
+## Configuration
+
+`src/config.ts` validates the environment with Zod at startup; the server refuses to start on invalid values. All variables are optional.
+
+| Variable    | Default       | Values                                                             |
+| ----------- | ------------- | ------------------------------------------------------------------ |
+| `PORT`      | `3000`        | 1–65535                                                            |
+| `HOST`      | `localhost`   | any host name                                                      |
+| `LOG_LEVEL` | `info`        | `fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silent`       |
+| `NODE_ENV`  | `development` | `development`, `test`, `production` (hides stack traces in errors) |
