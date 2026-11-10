@@ -24,7 +24,7 @@
 
 ## Error Handling
 
-Errors are thrown as typed classes from `src/domain/errors/api-error.classes.ts` (all extend `ApiError`, which extends `Error`) and turned into responses by `app.onError`. The interfaces they implement live in `api-error.types.ts`.
+Errors are thrown as typed classes from `src/api/errors/api-error.classes.ts` (all extend `ApiError`, which extends `Error`) and turned into responses by `app.onError`. The interfaces they implement live in `api-error.types.ts`.
 
 | Class                   | Status | Code                    | Extra response fields                   |
 | ----------------------- | ------ | ----------------------- | --------------------------------------- |

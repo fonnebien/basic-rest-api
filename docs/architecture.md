@@ -5,13 +5,13 @@
 ```text
 src
 ├── api/
+│   ├── errors/              # Typed error interfaces (*.types.ts) and Error classes (*.classes.ts)
 │   └── v1/
 │       ├── endpoints/       # Router factories per resource (*.endpoint.ts)
 │       ├── responses/       # Typed HTTP response shapes (e.g. error response)
 │       ├── schemas/         # Zod request schemas (*.schema.ts)
 │       └── v1.router.ts     # v1 router composition (createApiV1Router)
 ├── domain/                  # Business logic — no external dependencies
-│   ├── errors/              # Typed error interfaces (*.types.ts) and Error classes (*.classes.ts)
 │   ├── models/              # Plain domain types (Author, Book)
 │   ├── ports/               # Interfaces for outward needs (LoggerPort)
 │   ├── repositories/        # Repository interfaces (implemented in infrastructure)

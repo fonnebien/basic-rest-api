@@ -7,7 +7,7 @@ import {
   RateLimitError,
   ResourceNotFoundError,
   ValidationError,
-} from "#domain/errors/api-error.classes.js";
+} from "#api/errors/api-error.classes.js";
 import { createTestApp } from "./testing/create-test-app.js";
 
 describe("app", () => {

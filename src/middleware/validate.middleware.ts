@@ -1,5 +1,5 @@
 import { zValidator } from "@hono/zod-validator";
-import { ValidationError } from "#domain/errors/api-error.classes.js";
+import { ValidationError } from "#api/errors/api-error.classes.js";
 import type { ValidationTargets } from "hono";
 import type { ZodType } from "zod";
 

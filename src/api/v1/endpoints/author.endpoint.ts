@@ -1,7 +1,7 @@
 import {
   BadRequestError,
   ResourceNotFoundError,
-} from "#domain/errors/api-error.classes.js";
+} from "#api/errors/api-error.classes.js";
 import { authorSchema } from "#api/v1/schemas/author.schema.js";
 import type { AuthorService } from "#domain/services/author.service.js";
 import { idValidationSchema } from "#api/v1/schemas/id.schema.js";

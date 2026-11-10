@@ -8,7 +8,7 @@ import {
   ResourceNotFoundError,
   ServerError,
   ValidationError,
-} from "#domain/errors/api-error.classes.js";
+} from "#api/errors/api-error.classes.js";
 import { Logger } from "#infrastructure/logger/pino.logger.js";
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
