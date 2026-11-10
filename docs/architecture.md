@@ -6,6 +6,9 @@
 src
 ├── api/
 │   ├── errors/              # Typed error interfaces (*.types.ts) and Error classes (*.classes.ts)
+│   ├── middleware/
+│   │   ├── error-handler.middleware.ts  # Global error handler (app.onError)
+│   │   └── validate.middleware.ts       # zValidator wrapper that throws ValidationError
 │   └── v1/
 │       ├── endpoints/       # Router factories per resource (*.endpoint.ts)
 │       ├── responses/       # Typed HTTP response shapes (e.g. error response)
@@ -21,9 +24,6 @@ src
 │   ├── data/                # JSON data files (authors.json, books.json)
 │   ├── logger/              # Pino-backed LoggerPort implementation
 │   └── repositories/        # In-memory repository implementations
-├── middleware/
-│   ├── error-handler.middleware.ts  # Global error handler (app.onError)
-│   └── validate.middleware.ts       # zValidator wrapper that throws ValidationError
 ├── app.ts                   # createApp(services): middleware, routes, error handler
 ├── testing/                 # createTestApp(): app wired with fakes for tests
 ├── container.ts             # Composition root: wires repositories into services
@@ -36,7 +36,7 @@ Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`
 
 ## Path aliases
 
-Imports use Node subpath imports with a `.js` extension (for example `#domain/services/book.service.js`): `#api/*`, `#domain/*`, `#infrastructure/*` and `#middleware/*`. They are declared once, in the `imports` field of `package.json`, with a `source` condition (`src/`) and a `default` condition (`dist/`). `tsc` (`customConditions`), `tsx` (`--conditions=source`) and Vitest (`resolve.conditions`) enable `source`; `node dist/server.js` uses `default`. A new prefix only needs an entry in `package.json`. See [ADR 0001](adr/0001-native-subpath-imports.md).
+Imports use Node subpath imports with a `.js` extension (for example `#domain/services/book.service.js`): `#api/*`, `#domain/*` and `#infrastructure/*`. They are declared once, in the `imports` field of `package.json`, with a `source` condition (`src/`) and a `default` condition (`dist/`). `tsc` (`customConditions`), `tsx` (`--conditions=source`) and Vitest (`resolve.conditions`) enable `source`; `node dist/server.js` uses `default`. A new prefix only needs an entry in `package.json`. See [ADR 0001](adr/0001-native-subpath-imports.md).
 
 ## Validation
 

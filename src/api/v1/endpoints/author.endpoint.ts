@@ -5,7 +5,7 @@ import {
 import { authorSchema } from "#api/v1/schemas/author.schema.js";
 import type { AuthorService } from "#domain/services/author.service.js";
 import { idValidationSchema } from "#api/v1/schemas/id.schema.js";
-import { validate } from "#middleware/validate.middleware.js";
+import { validate } from "#api/middleware/validate.middleware.js";
 import { Hono } from "hono";
 import type { RequestIdVariables } from "hono/request-id";
 
