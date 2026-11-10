@@ -108,18 +108,12 @@ describe("app", () => {
     });
 
     it("omits the stack trace in production", async () => {
-      const { app, bookService } = createTestApp();
+      const { app, bookService } = createTestApp({}, { isProduction: true });
       vi.spyOn(bookService, "getAllBooks").mockRejectedValue(new Error("x"));
-      const previous = process.env.NODE_ENV;
-      process.env.NODE_ENV = "production";
 
-      try {
-        const res = await app.request("/api/v1/books");
+      const res = await app.request("/api/v1/books");
 
-        expect((await res.json()).error.trace).toBeUndefined();
-      } finally {
-        process.env.NODE_ENV = previous;
-      }
+      expect((await res.json()).error.trace).toBeUndefined();
     });
   });
 });

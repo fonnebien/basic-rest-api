@@ -24,10 +24,11 @@ src
 │   ├── data/                # JSON data files (authors.json, books.json)
 │   ├── logger/              # Pino-backed LoggerPort implementation
 │   └── repositories/        # In-memory repository implementations
-├── app.ts                   # createApp(services): middleware, routes, error handler
+├── app.ts                   # createApp(services, options): middleware, routes, error handler
+├── config.ts                # loadConfig(): Zod-validated env (PORT, HOST, LOG_LEVEL, NODE_ENV)
 ├── testing/                 # createTestApp(): app wired with fakes for tests
-├── container.ts             # Composition root: wires repositories into services
-└── server.ts                # Entry point: createApp(container services) + serve
+├── container.ts             # createContainer({ createLogger }): wires repositories into services
+└── server.ts                # Entry point: loadConfig + createContainer + createApp + serve
 ```
 
 ## Naming convention
@@ -48,4 +49,4 @@ The project follows **Clean Architecture** principles — dependencies always po
 
 ## Dependency wiring
 
-Services receive their repository and logger through the constructor. `container.ts` is the only place that picks concrete implementations, and `app.ts` passes the services to the routers. To swap the data store, add a new `BookRepository`/`AuthorRepository` implementation in `infrastructure/` and change `container.ts`.
+Services receive their repository and logger through the constructor. `createContainer({ createLogger })` in `container.ts` is the only place that picks concrete repositories, and `server.ts` is the only place that reads the configuration and picks the pino logger (`createLoggerFactory`). `createApp(services, { createLogger, isProduction })` receives everything it needs as arguments, so `api/` never imports `infrastructure/`; tests pass a `silentLogger` factory. To swap the data store, add a new `BookRepository`/`AuthorRepository` implementation in `infrastructure/` and change `container.ts`.

@@ -1,16 +1,23 @@
 import { serve } from "@hono/node-server";
-import { Logger } from "#infrastructure/logger/pino.logger.js";
+import { createLoggerFactory } from "#infrastructure/logger/pino.logger.js";
 import { createApp } from "./app.js";
-import { authorService, bookService } from "./container.js";
+import { loadConfig } from "./config.js";
+import { createContainer } from "./container.js";
 
-const logger = Logger.getInstance("api:server");
-const app = createApp({ authorService, bookService });
+const config = loadConfig();
+const createLogger = createLoggerFactory(config.logLevel);
+const logger = createLogger("api:server");
+
+const app = createApp(createContainer({ createLogger }), {
+  createLogger,
+  isProduction: config.isProduction,
+});
 
 serve(
   {
     fetch: app.fetch,
-    port: 3000,
-    hostname: "localhost",
+    port: config.port,
+    hostname: config.host,
   },
   (info) => {
     logger.info(`Server is running at ${info.port}`);

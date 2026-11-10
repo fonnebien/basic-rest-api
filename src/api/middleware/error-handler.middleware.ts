@@ -9,36 +9,47 @@ import {
   ServerError,
   ValidationError,
 } from "#api/errors/api-error.classes.js";
-import { Logger } from "#infrastructure/logger/pino.logger.js";
+import type { LoggerPort } from "#domain/ports/logger.port.js";
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
-const logger = Logger.getInstance("api:middleware:error-handler");
+export interface ErrorHandlerOptions {
+  logger: LoggerPort;
+  isProduction: boolean;
+}
 
-export const errorHandler: ErrorHandler = (err, c) => {
-  logger.error("Error caught by error handler:", err);
+export const createErrorHandler =
+  ({ logger, isProduction }: ErrorHandlerOptions): ErrorHandler =>
+  (err, c) => {
+    logger.error("Error caught by error handler:", err);
 
-  if (err instanceof HTTPException) {
-    return c.json(
-      { error: { code: "BAD_REQUEST", message: err.message } },
-      err.status as ContentfulStatusCode,
-    );
-  }
+    if (err instanceof HTTPException) {
+      return c.json(
+        { error: { code: "BAD_REQUEST", message: err.message } },
+        err.status as ContentfulStatusCode,
+      );
+    }
 
-  if (err instanceof ApiError) {
-    return c.json(formatApiError(err), err.status as ContentfulStatusCode);
-  }
+    if (err instanceof ApiError) {
+      return c.json(
+        formatApiError(err, isProduction),
+        err.status as ContentfulStatusCode,
+      );
+    }
 
-  // Handle unknown errors
-  const serverError = new ServerError(undefined, {
-    trace: process.env.NODE_ENV === "production" ? undefined : err.stack,
-  });
+    // Handle unknown errors
+    const serverError = new ServerError(undefined, {
+      trace: isProduction ? undefined : err.stack,
+    });
 
-  return c.json(formatApiError(serverError), 500);
-};
+    return c.json(formatApiError(serverError, isProduction), 500);
+  };
 
-function formatApiError(error: ApiError): Record<string, unknown> {
+function formatApiError(
+  error: ApiError,
+  isProduction: boolean,
+): Record<string, unknown> {
   const baseError = {
     error: {
       code: error.code,
@@ -85,9 +96,7 @@ function formatApiError(error: ApiError): Record<string, unknown> {
     return {
       error: {
         ...baseError.error,
-        ...(process.env.NODE_ENV !== "production" && error.trace
-          ? { trace: error.trace }
-          : {}),
+        ...(!isProduction && error.trace ? { trace: error.trace } : {}),
       },
     };
   }

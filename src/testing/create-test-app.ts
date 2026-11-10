@@ -9,6 +9,7 @@ import { silentLogger } from "../domain/testing/silent.logger.js";
 
 export const createTestApp = (
   seed: { books?: Book[]; authors?: Author[] } = {},
+  options: { isProduction?: boolean } = {},
 ) => {
   const bookService = new BookService(
     new FakeBookRepository(seed.books ?? []),
@@ -20,7 +21,13 @@ export const createTestApp = (
   );
 
   return {
-    app: createApp({ authorService, bookService }),
+    app: createApp(
+      { authorService, bookService },
+      {
+        createLogger: () => silentLogger,
+        isProduction: options.isProduction ?? false,
+      },
+    ),
     bookService,
     authorService,
   };

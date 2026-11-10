@@ -1,15 +1,22 @@
 import { createApiV1Router, type ApiV1Services } from "#api/v1/v1.router.js";
-import { errorHandler } from "#api/middleware/error-handler.middleware.js";
-import { Logger } from "#infrastructure/logger/pino.logger.js";
+import { createErrorHandler } from "#api/middleware/error-handler.middleware.js";
+import type { LoggerFactory } from "#domain/ports/logger.port.js";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { prettyJSON } from "hono/pretty-json";
 import type { RequestIdVariables } from "hono/request-id";
 import { requestId } from "hono/request-id";
 
-const logger = Logger.getInstance("api:app");
+export interface AppOptions {
+  createLogger: LoggerFactory;
+  isProduction: boolean;
+}
 
-export const createApp = (services: ApiV1Services) => {
+export const createApp = (
+  services: ApiV1Services,
+  { createLogger, isProduction }: AppOptions,
+) => {
+  const logger = createLogger("api:app");
   const app = new Hono<{ Variables: RequestIdVariables }>();
 
   app.use(cors());
@@ -37,7 +44,12 @@ export const createApp = (services: ApiV1Services) => {
     return c.json({ error: "Not Found" });
   });
 
-  app.onError(errorHandler);
+  app.onError(
+    createErrorHandler({
+      logger: createLogger("api:middleware:error-handler"),
+      isProduction,
+    }),
+  );
 
   return app;
 };
