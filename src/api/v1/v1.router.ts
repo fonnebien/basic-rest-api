@@ -1,5 +1,5 @@
-import type { AuthorService } from "@services/author.service.js";
-import type { BookService } from "@services/book.service.js";
+import type { AuthorService } from "#domain/services/author.service.js";
+import type { BookService } from "#domain/services/book.service.js";
 import { Hono } from "hono";
 import { createAuthorRouter } from "./endpoints/author.endpoint.js";
 import { createBookRouter } from "./endpoints/book.endpoint.js";

@@ -10,14 +10,14 @@ pnpm start   # Start production server (requires a build)
 
 ## Testing
 
-Vitest runs the tests natively as ES modules (no experimental Node flags). Config and path aliases are in `vitest.config.ts`; keep the aliases in sync with `tsconfig.json`.
+Vitest runs the tests natively as ES modules (no experimental Node flags). Config is in `vitest.config.ts`; the `#…` imports resolve through the `source` condition (see [ADR 0001](adr/0001-native-subpath-imports.md)).
 
 ```bash
 pnpm test         # Run tests
 pnpm test:watch   # Run tests in watch mode
 ```
 
-Tests live next to the code as `*.test.ts`. Service tests inject in-memory fakes from `src/domain/testing/` (`Fake*Repository`, `silentLogger`) instead of touching infrastructure. Endpoint tests (`*.endpoint.test.ts`, `app.test.ts`) call the real Hono app through `app.request()`. `createTestApp()` in `src/testing/` builds it with `createApp()` and fake repositories, so no server or port is needed. `LOG_LEVEL=silent` is set in `vitest.setup.ts` to keep test output clean. Test files and every `testing/` folder are excluded from the `tsc` build.
+Tests live next to the code as `*.test.ts`. Service tests inject in-memory fakes from `src/domain/testing/` (`Fake*Repository`, `silentLogger`) instead of touching infrastructure. Endpoint tests (`*.endpoint.test.ts`, `app.test.ts`) call the real Hono app through `app.request()`. `createTestApp()` in `src/testing/` builds it with `createApp()` and fake repositories, so no server or port is needed. `createTestApp()` injects `silentLogger`, so test output stays clean. Test files and every `testing/` folder are excluded from the `tsc` build.
 
 ## Code Quality
 
@@ -37,3 +37,14 @@ This repo is used to explore and solidify:
 - Input validation patterns
 - REST API design conventions
 - Tooling setup (ESLint, Prettier, pnpm workspaces, tsconfig)
+
+## Configuration
+
+`src/config.ts` validates the environment with Zod at startup; the server refuses to start on invalid values. All variables are optional.
+
+| Variable    | Default       | Values                                                             |
+| ----------- | ------------- | ------------------------------------------------------------------ |
+| `PORT`      | `3000`        | 1–65535                                                            |
+| `HOST`      | `localhost`   | any host name                                                      |
+| `LOG_LEVEL` | `info`        | `fatal`, `error`, `warn`, `info`, `debug`, `trace`, `silent`       |
+| `NODE_ENV`  | `development` | `development`, `test`, `production` (hides stack traces in errors) |

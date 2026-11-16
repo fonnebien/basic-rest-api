@@ -5,13 +5,16 @@
 ```text
 src
 ├── api/
+│   ├── errors/              # Typed error interfaces (*.types.ts) and Error classes (*.classes.ts)
+│   ├── middleware/
+│   │   ├── error-handler.middleware.ts  # Global error handler (app.onError)
+│   │   └── validate.middleware.ts       # zValidator wrapper that throws ValidationError
 │   └── v1/
 │       ├── endpoints/       # Router factories per resource (*.endpoint.ts)
 │       ├── responses/       # Typed HTTP response shapes (e.g. error response)
 │       ├── schemas/         # Zod request schemas (*.schema.ts)
 │       └── v1.router.ts     # v1 router composition (createApiV1Router)
 ├── domain/                  # Business logic — no external dependencies
-│   ├── errors/              # Typed error interfaces (*.types.ts) and Error classes (*.classes.ts)
 │   ├── models/              # Plain domain types (Author, Book)
 │   ├── ports/               # Interfaces for outward needs (LoggerPort)
 │   ├── repositories/        # Repository interfaces (implemented in infrastructure)
@@ -21,13 +24,11 @@ src
 │   ├── data/                # JSON data files (authors.json, books.json)
 │   ├── logger/              # Pino-backed LoggerPort implementation
 │   └── repositories/        # In-memory repository implementations
-├── middleware/
-│   ├── error-handler.middleware.ts  # Global error handler (app.onError)
-│   └── validate.middleware.ts       # zValidator wrapper that throws ValidationError
-├── app.ts                   # createApp(services): middleware, routes, error handler
+├── app.ts                   # createApp(services, options): middleware, routes, error handler
+├── config.ts                # loadConfig(): Zod-validated env (PORT, HOST, LOG_LEVEL, NODE_ENV)
 ├── testing/                 # createTestApp(): app wired with fakes for tests
-├── container.ts             # Composition root: wires repositories into services
-└── server.ts                # Entry point: createApp(container services) + serve
+├── container.ts             # createContainer({ createLogger }): wires repositories into services
+└── server.ts                # Entry point: loadConfig + createContainer + createApp + serve
 ```
 
 ## Naming convention
@@ -36,7 +37,7 @@ Files are kebab-case and named `<name>.<role>.ts`, for example `book.service.ts`
 
 ## Path aliases
 
-Imports use aliases with a `.js` extension (for example `@services/book.service.js`): `@api/`, `@domain/`, `@models/`, `@services/`, `@errors/`, `@repositories/`, `@infrastructure/` and `@middleware/`. They are declared in `tsconfig.json` (`paths`) and mirrored in `vitest.config.ts` (`resolve.alias`), so a new alias must be added in both. `tsx` and `tsc` resolve them from `tsconfig.json`.
+Imports use Node subpath imports with a `.js` extension (for example `#domain/services/book.service.js`): `#api/*`, `#domain/*` and `#infrastructure/*`. They are declared once, in the `imports` field of `package.json`, with a `source` condition (`src/`) and a `default` condition (`dist/`). `tsc` (`customConditions`), `tsx` (`--conditions=source`) and Vitest (`resolve.conditions`) enable `source`; `node dist/server.js` uses `default`. A new prefix only needs an entry in `package.json`. See [ADR 0001](adr/0001-native-subpath-imports.md).
 
 ## Validation
 
@@ -48,4 +49,4 @@ The project follows **Clean Architecture** principles — dependencies always po
 
 ## Dependency wiring
 
-Services receive their repository and logger through the constructor. `container.ts` is the only place that picks concrete implementations, and `app.ts` passes the services to the routers. To swap the data store, add a new `BookRepository`/`AuthorRepository` implementation in `infrastructure/` and change `container.ts`.
+Services receive their repository and logger through the constructor. `createContainer({ createLogger })` in `container.ts` is the only place that picks concrete repositories, and `server.ts` is the only place that reads the configuration and picks the pino logger (`createLoggerFactory`). `createApp(services, { createLogger, isProduction })` receives everything it needs as arguments, so `api/` never imports `infrastructure/`; tests pass a `silentLogger` factory. To swap the data store, add a new `BookRepository`/`AuthorRepository` implementation in `infrastructure/` and change `container.ts`.

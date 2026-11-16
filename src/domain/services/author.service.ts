@@ -1,10 +1,10 @@
-import type { LoggerPort } from "@domain/ports/logger.port.js";
+import type { LoggerPort } from "#domain/ports/logger.port.js";
 import {
   type Author,
   type AuthorCreation,
   type AuthorUpdate,
-} from "@models/author.model.js";
-import type { AuthorRepository } from "@repositories/author.repository.js";
+} from "#domain/models/author.model.js";
+import type { AuthorRepository } from "#domain/repositories/author.repository.js";
 
 export class AuthorService {
   constructor(

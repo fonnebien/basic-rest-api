@@ -8,3 +8,5 @@ export interface LoggerPort {
     ...args: Record<string, unknown>[]
   ): void;
 }
+
+export type LoggerFactory = (name: string) => LoggerPort;

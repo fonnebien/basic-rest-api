@@ -1,4 +1,4 @@
-import type { LoggerPort } from "@domain/ports/logger.port.js";
+import type { LoggerFactory, LoggerPort } from "#domain/ports/logger.port.js";
 import { type Logger as PinoLogger, pino } from "pino";
 import pinoPretty from "pino-pretty";
 
@@ -7,7 +7,7 @@ export class Logger implements LoggerPort {
   private logger: PinoLogger;
   private serviceName: string;
 
-  private constructor(serviceName: string) {
+  private constructor(serviceName: string, level: string) {
     this.serviceName = serviceName;
 
     const prettyStream = pinoPretty({
@@ -18,18 +18,19 @@ export class Logger implements LoggerPort {
 
     this.logger = pino(
       {
-        level: process.env.LOG_LEVEL || "info",
+        level,
         name: serviceName,
       },
       prettyStream,
     );
   }
 
-  public static getInstance(serviceName = "default"): Logger {
-    if (!Logger.instances.has(serviceName)) {
-      Logger.instances.set(serviceName, new Logger(serviceName));
+  public static getInstance(serviceName = "default", level = "info"): Logger {
+    const key = `${level}:${serviceName}`;
+    if (!Logger.instances.has(key)) {
+      Logger.instances.set(key, new Logger(serviceName, level));
     }
-    return Logger.instances.get(serviceName)!;
+    return Logger.instances.get(key)!;
   }
 
   public debug(message: string, ...args: Record<string, unknown>[]): void {
@@ -77,3 +78,8 @@ export class Logger implements LoggerPort {
     }
   }
 }
+
+export const createLoggerFactory =
+  (level: string): LoggerFactory =>
+  (name) =>
+    Logger.getInstance(name, level);

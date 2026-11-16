@@ -1,4 +1,4 @@
-import type { Book } from "@models/book.model.js";
+import type { Book } from "#domain/models/book.model.js";
 
 export interface BookRepository {
   findAll(): Promise<Book[]>;
